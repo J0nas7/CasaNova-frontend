@@ -38,7 +38,7 @@ export type Property = {
     Property_Num_Bathrooms: number;
     Property_Square_Feet: number;
     Property_Amenities: string[];
-    Property_Property_Type: string;
+    Property_Property_Type: number;
     Property_Available_From: string;
     Property_Is_Active: boolean;
     Property_CreatedAt?: string;

@@ -58,7 +58,7 @@ export const LatestAds: React.FC<StartpageProps> = ({ properties }) => {
             <Text className="text-2xl font-bold">🆕 Latest Listings</Text>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
                 {latestProperties?.map((property) => (
-                    <Link key={property.Property_ID} href={`/property/${property.Property_ID}`} className="group">
+                    <Link key={property.Property_ID} href={`/listing/${property.Property_ID}`} className="group">
                         <div className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition">
                             <img
                                 src={property.images?.[0]?.Image_Image_URL || "https://via.placeholder.com/400x250"}
@@ -82,22 +82,26 @@ export const LatestAds: React.FC<StartpageProps> = ({ properties }) => {
 
 export const PropertyCategories = () => {
     const categories = [
-        { name: "Apartments", icon: "🏢" },
-        { name: "Houses", icon: "🏡" },
-        { name: "Condos", icon: "🏘" },
-        { name: "Villas", icon: "🏰" },
-        { name: "Studios", icon: "🎨" },
+        { name: "Apartments", icon: "🏢", id: 1 },
+        { name: "Rooms", icon: "🏘", id: 2 },
+        { name: "Houses", icon: "🏡", id: 3 },
+        { name: "Townhouses", icon: "🏰", id: 4 },
+        { name: "All rentals", icon: "", id: 0 }
     ];
 
     return (
         <Block className="mt-8">
             <Text className="text-2xl font-bold">🏡 Property Categories</Text>
-            <div className="flex gap-4 mt-4">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-4">
                 {categories.map((category, index) => (
-                    <div key={index} className="bg-white p-4 rounded-lg shadow-md flex items-center gap-3">
+                    <Link 
+                        key={index} 
+                        className="bg-white p-4 rounded-lg shadow-md flex items-center gap-3"
+                        href={`/search${category.id ? `?propertyType=${category.id}` : ""}`}
+                    >
                         <Text className="text-2xl">{category.icon}</Text>
                         <Text className="text-lg font-semibold">{category.name}</Text>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </Block>
@@ -118,10 +122,14 @@ export const PopularCities = () => {
             <Text className="text-2xl font-bold">🌆 Popular Cities</Text>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-4">
                 {popularCities.map((city, index) => (
-                    <div key={index} className="bg-blue-600 text-white p-4 rounded-lg shadow-md text-center">
+                    <Link 
+                        key={index} 
+                        className="bg-blue-600 text-white p-4 rounded-lg shadow-md text-center"
+                        href={`/search?city=${city.name.replace(/ /g, "+")}`}
+                    >
                         <Text className="text-lg font-semibold">{city.name}</Text>
                         <Text className="text-sm">Listings: {city.listings}</Text>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </Block>
