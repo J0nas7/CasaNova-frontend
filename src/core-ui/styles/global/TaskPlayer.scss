@@ -1,0 +1,35 @@
+.taskplayer-container {
+    max-width: 600px;
+    @apply fixed z-50 bg-gray-200 shadow-lg rounded-lg w-full p-4;
+    @apply top-auto bottom-20 left-1/2 transform -translate-x-1/2;
+}
+
+.timetrack-metric, .timespent-metric {
+    @apply flex items-center gap-3;
+}
+
+.timetrack-metric {
+    .timetrack-button {
+        @apply w-8 h-8 text-white rounded-full;
+    }
+    .timetrack-playbutton {
+        @apply bg-green-400;
+    }
+    .timetrack-stopbutton {
+        @apply bg-red-400;
+    }
+    .timetrack-changetask {
+        @apply p-2 border rounded inline w-full max-w-full min-w-0;
+        @apply bg-gray-300;
+    }
+}
+
+.task-bulkedit-container {
+    @apply fixed z-10 top-36 left-auto h-auto w-auto bg-white py-4 px-8 rounded-lg shadow-lg flex flex-col gap-3;
+    transition: right 0.2s ease;
+    right: -378px;
+
+    &.task-bulkedit-container-open {
+        @apply right-10;
+    }
+}

@@ -1,0 +1,105 @@
+.userDetailsForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.formGroup {
+    margin-bottom: 15px;
+}
+
+.label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.profileImageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.userProfileImage {
+    max-width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.noImage {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ddd;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.imageUploadInput {
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.formActions {
+    @apply flex justify-between;
+}
+
+.deletedMessage {
+    margin-top: 20px;
+    text-align: center;
+    color: #e74c3c;
+}
+
+
+
+
+
+.userTeamsContainer {
+    margin-top: 30px;
+}
+
+.teamsHeading {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.teamsList {
+    list-style-type: none;
+    padding: 0;
+}
+
+.teamItem {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.teamItem p {
+    margin: 5px 0;
+}
+
+.teamItem strong {
+    font-weight: bold;
+}

@@ -1,0 +1,33 @@
+{
+    "seatsManager": {
+        "manageTeamUserSeats": "Manage Team User Seats",
+        "teamUserSeats": "Team User Seats",
+        "length0_iamowner": "There are no users on any seats. You are the organisation owner.",
+        "edit": "Edit",
+        "remove": "Remove",
+        "createNewUserAndAssignSeat": "Create New User and Assign Seat",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "role": "Role",
+        "user": "User",
+        "admin": "Admin",
+        "createAndAssignSeat": "Create and Assign Seat",
+        "editUserSeat": "Edit User Seat",
+        "userRole": "User Role",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending",
+        "saveChanges": "Save Changes",
+        "pleaseFillInAllFields": "Please fill in all required fields!",
+        "searchAndInviteUser": "Search and Invite User",
+        "searchUser": "Search User",
+        "userNotFound": "User not found. Please try again.",
+        "invalidEmail": "Please enter a valid email address.",
+        "userFound": "User found",
+        "sendInvite": "Send Invite",
+        "createSeatError": "Failed to send invitation",
+        "inviteSent": "Invitation sent to"
+    }
+}

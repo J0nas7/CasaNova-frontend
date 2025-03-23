@@ -1,0 +1,26 @@
+.leftNav {
+    width: 192px;
+    height: calc(100vh - 4rem); // Fill height below header
+    border-right: 1px solid #d1d5db; // Tailwind's border-gray-300
+    @apply fixed top-16 bg-gray-100 overflow-y-auto p-4;
+}
+
+.navList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.navLink {
+    display: block;
+    color: #374151; // Tailwind's text-gray-800
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+        @apply bg-blue-100 text-blue-600;
+        transform: scale(1.1);
+    }
+}

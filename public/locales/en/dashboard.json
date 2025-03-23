@@ -1,0 +1,19 @@
+{
+    "dashboard": {
+        "title": "Dashboard",
+        "totalTasks": "Total Tasks",
+        "pendingTasks": "Pending Tasks",
+        "completedTasks": "Completed Tasks",
+        "overdueTasks": "Overdue Tasks",
+        "tasksInProgress": "Tasks in Progress",
+        "progress": "Project Progress",
+        "analytics": "Task Analytics",
+        "taskCompletionOverTime": "Task Completion Over Time",
+        "statusLabels": {
+            "toDo": "To Do",
+            "inProgress": "In Progress",
+            "waitingForReview": "Waiting for Review",
+            "done": "Done"
+        }
+    }
+}

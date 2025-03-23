@@ -1,0 +1,202 @@
+.taskDetailModalBackground {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    @apply fixed top-0 left-0 justify-center items-center !flex;
+}
+
+.taskDetailContainer {
+    @apply w-full bg-white flex-col gap-4 p-4 !flex;
+    min-width: 80%;
+    max-width: 1200px;
+
+    &.withModal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+
+        height: 750px;
+        max-height: 80%;
+    }
+}
+
+.titlePlaceholder {
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: black;
+    @apply w-full p-3;
+}
+
+.descriptionPlaceholder {
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #aaa;
+    @apply w-full p-3;
+}
+
+.descriptionPlaceholder:hover {
+    border: 1px dashed #ccc;
+}
+
+.descriptionEditor {
+    @apply w-full !flex;
+    min-height: 150px;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.titlePlaceholder, .descriptionPlaceholder {
+    &:hover {
+        @apply bg-gray-100 cursor-text;
+    }
+}
+
+.titleInput {
+    font-size: 1.5rem;
+    font-weight: bold;
+    outline: none;
+    border: 2px rgb(50, 50, 250) solid;
+    @apply w-full p-3;
+}
+
+.descriptionInput {
+    width: 100%;
+    font-size: 1.2rem;
+    padding: 4px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    resize: none;
+}
+
+.ctaButtons {
+    @apply ml-4 gap-2 !flex;
+
+    .ctaButton {
+        @apply flex gap-2 items-center;
+    }
+}
+
+.content {
+    @apply gap-4 !flex;
+}
+
+.leftPanel,
+.rightPanel {
+    flex: 1;
+    width: 50%;
+    overflow-y: auto;
+}
+
+.withModal {
+    .leftPanel, .rightPanel {
+        height: calc(100vh - 20% - 66px);
+    }
+}
+
+// .descriptionSection {
+//     background-color: #f9f9f9;
+// }
+
+.mediaSection,
+.commentsSection,
+.detailsSection {
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mediaPlaceholders {
+    @apply gap-2 !flex;
+}
+
+.mediaPlaceholder {
+    @apply items-center justify-center bg-gray-300 w-20 h-20 !flex;
+}
+
+.commentInputContainer {
+    @apply flex-col gap-3 mb-4 !flex;
+}
+
+.commentInput {
+    width: 100%;
+    flex-grow: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    min-height: 40px;
+    max-height: 150px;
+    font-size: 14px;
+    overflow-y: hidden;
+    line-height: 1.5;
+    background-color: white;
+}
+
+.commentPlaceholder {
+    @apply flex-grow items-center cursor-text p-2 rounded-lg min-h-10 !flex;
+    color: #ccc;
+    font-size: 14px;
+    border: 1px solid #ccc;
+
+    &:hover {
+        @apply bg-gray-100;
+    }
+}
+
+.editDescriptionActions, .newCommentActions {
+    @apply gap-3 !flex;
+}
+
+.sendButton {
+    @apply w-full text-white py-3 px-2 rounded-lg cursor-pointer items-center justify-center !flex;
+    background-color: #007bff;
+    border: none;
+}
+
+.sendButton:hover {
+    background-color: #0056b3;
+}
+
+.cancelButton {
+    @apply items-center justify-center cursor-pointer rounded-lg px-2 py-3 text-black w-full !flex;
+    border: none;
+}
+
+.mediaItem,
+.commentItem {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 6px;
+}
+
+.mediaMeta,
+.commentMeta {
+    @apply justify-between text-gray-400 text-xs !flex;
+}
+
+.mediaActions,
+.commentActions {
+    @apply cursor-pointer gap-2 !flex;
+}
+
+.icon {
+    cursor: pointer;
+}
+
+.icon:hover {
+    color: #333;
+}
+
+.comment {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}

@@ -1,0 +1,32 @@
+{
+    "h2": {
+        "Login": "Logon your account",
+        "Register": "Create an account",
+        "Forgot": "Forgot your password"
+    },
+    "forms": {
+        "Email": "E-mail",
+        "Password": "Password",
+        "Confirm-password": "Confirm password",
+        "Show": "Show",
+        "Hide": "Hide",
+        "Accept-Terms-of-Service": "Accept User terms",
+        "Sign-me-up-for-news-and-marketing": "Subscribe to news and marketing",
+        "Remember-me": "Remember me!",
+        "buttons": {
+            "Sign-up": "Create acccount",
+            "Login": "Login",
+            "Forgot": "Send e-mail"
+        }
+    },
+    "helptexts": {
+        "Reset-link": "You will receieve an e-mail with a reset-link."
+    },
+    "links": {
+        "Create-a-new-account": "Create a new account",
+        "Already-have-an-account": "Do you already have an account?",
+        "Do-not-have-an-account-yet": "Do you not have an acccount yet?",
+        "Did-you-forget-your-password": "Did you forget your password?",
+        "Remember-your-password-again": "Did you remember your password?"
+    }
+}

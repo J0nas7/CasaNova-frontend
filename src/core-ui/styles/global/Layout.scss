@@ -1,0 +1,39 @@
+.layout-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    
+    .content-wrapper {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+
+        .main-content {
+            width: 100%;
+            flex: 1;
+            overflow-y: auto;
+            background-color: #f9fafb; // Tailwind's bg-gray-50
+            padding: 1.5rem;
+            @apply mt-36 md:mt-16 mb-24;
+            
+            .page-content {
+                @apply mx-auto overflow-x-auto;
+                @apply p-6 bg-gray-100 rounded-lg shadow-lg;
+            }
+        }
+
+        aside + .main-content {
+            width: calc(100% - 192px);
+            @apply ml-48;
+        }
+
+        .left-nav {
+            flex: 0 0 250px;
+            max-width: 250px;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+    }
+}

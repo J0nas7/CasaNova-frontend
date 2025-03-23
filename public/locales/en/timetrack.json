@@ -1,0 +1,42 @@
+{
+    "timetrack": {
+        "title": "Time Entries",
+        "timeSummary": {
+            "totalTimeTracked": "Total Time Tracked",
+            "avgDailyTimeSpent": "Avg. Daily Time Spent"
+        },
+        "timeTracksPeriodSum": {
+            "title": "Summaries per Day",
+            "totalTimeTracked": "Total Time Tracked"
+        },
+        "timeSpentPerTask": {
+            "title": "Time Spent per Task",
+            "unknownTask": "Unknown Task",
+            "hoursPerTask": "Hours per Task",
+            "noData": "No data available"
+        },
+        "latestTimeLogs": {
+            "title": "Latest Time Logs",
+            "noTimeTracks": "No time entries found.",
+            "today": "Today",
+            "yesterday": "Yesterday",
+            "thisWeek": "This Week",
+            "previousWeek": "Previous Week",
+            "thisMonth": "This Month",
+            "lastMonth": "Last Month",
+            "earlier": "Earlier",
+            "ongoing": "Ongoing",
+            "endTimeNotAvailable": "End time not available",
+            "andOthers": "{{count}} more entries"
+        },
+        "idleAndBreakTimeAnalysis": {
+            "title": "Idle vs Active Time & Break Time Analysis",
+            "totalIdleTime": "Total Idle Time",
+            "totalActiveTime": "Total Active Time",
+            "totalBreakTime": "Total Break Time",
+            "shortBreaks": "Short Breaks (<= 30 min)",
+            "longBreaks": "Long Breaks (> 30 min)",
+            "breaks": "breaks"
+        }
+    }
+}

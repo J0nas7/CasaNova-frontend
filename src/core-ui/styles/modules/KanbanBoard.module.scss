@@ -1,0 +1,40 @@
+.board {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4;
+}
+
+.column {
+    @apply bg-white p-4 rounded-lg shadow-md flex flex-col;
+
+    &.isOver {
+        border: 2px dashed #3182ce;
+    }
+}
+
+.columnTitle {
+    @apply text-xl font-semibold text-gray-700 mb-4;
+}
+
+.taskList {
+    @apply space-y-4;
+}
+
+.taskCard {
+    @apply bg-blue-50 p-4 rounded-md shadow-sm border border-blue-200 flex justify-between items-center;
+    transition: transform 0.2s ease;
+    
+    .taskTitle {
+        @apply cursor-pointer hover:underline;
+    }
+    
+    .removeButton {
+        @apply text-red-500 hover:text-red-700 focus:outline-none hidden;
+    }
+    
+    &:hover {
+        transform: scale(1.1);
+
+        .removeButton {
+            @apply block;
+        }
+    }
+}

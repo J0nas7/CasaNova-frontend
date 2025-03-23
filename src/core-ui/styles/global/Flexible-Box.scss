@@ -1,0 +1,73 @@
+.grid-wrapper {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+
+    // Max number of cols
+    &.max-cols-2 {
+        @apply lg:grid-cols-2;
+        @apply xl:grid-cols-2;
+        @apply w-full;// xl:w-3/4 2xl:w-1/2;
+    }
+    
+    &.max-cols-3 {
+        @apply xl:grid-cols-3;
+        @apply w-full;// xl:w-3/4 2xl:w-1/2;
+    }
+
+    &.max-cols-4 {
+        @apply xl:grid-cols-4;
+    }
+
+    &.max-cols-5 {
+        @apply md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5;
+    }
+}
+
+.content-box-flexible {
+    
+    // General
+    &:not(.no-box) {
+        padding: 24px;
+        background-color: rgba(255, 255, 255, .6);
+        @apply mb-5 rounded-lg shadow-md;
+    }
+
+    // Width
+    &.col-span-1 {
+        width: 100%;
+    }
+
+    // Colored boxes
+    &.box-green {
+        background-color: var(--lightGreen);
+    }
+
+    // Very custom
+    &.center-300 {
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @apply text-3xl font-bold;
+    }
+
+    // Children
+    .box-title-with-icon {
+        margin-bottom: 16px;
+        @apply w-full flex items-center justify-center flex-col;
+        @apply sm:justify-start;
+        @apply sm:flex-row;
+    }
+
+    .box-title {
+        @apply text-black;
+    }
+
+    .box-title-icon {
+        @apply h-[23px] ml-2 mr-6 float-left;
+    }
+
+    .box-title {
+        @apply font-medium text-2xl;
+    }
+}

@@ -1,0 +1,109 @@
+@import "Button.scss";
+
+.guest-wrapper {
+    width: 100%;
+    height: 100vh;
+    background-color: #DEEDE4;
+
+    .jumbotron-wrapper,
+    .guest-contents {
+        height: 100vh;
+    }
+
+    .jumbotron-wrapper {
+        background-color: #fff;
+        background-size: auto 100%;
+        background-position-x: center;
+        @apply w-1/2 float-left;
+        @apply hidden lg:block relative;
+        @apply bg-no-repeat;
+
+        .teaser-image {
+            @apply hidden xl:block;
+        }
+    }
+
+    .guest-contents {
+        @apply w-full lg:w-1/2;
+        @apply relative float-left;
+        @apply flex items-center justify-center;
+
+        h2 {
+            @apply text-3xl text-black font-bold mb-10;
+        }
+
+        .register-page {
+            @apply max-w-sm w-full;
+        }
+
+        .guest-form {
+
+            .input-field-wrap,
+            .login-field {
+                @apply w-full;
+
+                .MuiFormControl-root {
+                    @apply w-full;
+                }
+
+                .MuiFormLabel-root {
+                    @apply text-gray-300;
+                }
+
+                .MuiInputBase-root {
+                    @apply pr-0;
+                }
+
+                input,
+                textarea,
+                select {
+                    border-bottom: 2px solid;
+                    border-color: #1ab11f;
+                    border-radius: 4px;
+                    @apply block w-full p-3 mb-4 bg-gray-700 text-white outline-none;
+
+                    &:has(+ .MuiInputAdornment-root) {
+                        border-radius: 4px 0 0 4px;
+                    }
+                }
+
+                fieldset {
+                    border: 0;
+                }
+
+                .MuiInputAdornment-root {
+                    height: 49px;
+                    border-bottom: 2px solid;
+                    border-color: #1ab11f;
+                    border-radius: 0 4px 4px 0;
+                    @apply max-h-none mb-4 mx-0;
+                    @apply bg-gray-700;
+
+                    &.MuiInputAdornment-positionEnd {
+                        button {
+                            @include button;
+                            @include button-green;
+                            width: calc(100% - 12px);
+                            margin-right: 12px;
+                        }
+                    }
+                }
+            }
+
+            .error-notice {
+                margin-bottom: 20px;
+            }
+
+            .birthday-wrapper,
+            .birthday-inner {
+                height: 75px;
+
+                .birthday-inner {
+                    display: flex;
+                    gap: 15px;
+                    align-items: center;
+                }
+            }
+        }
+    }
+}

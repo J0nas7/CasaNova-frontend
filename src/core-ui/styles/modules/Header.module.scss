@@ -1,0 +1,53 @@
+.header {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    @apply fixed w-full top-0 text-white z-10 bg-green-400;
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    @apply flex flex-col gap-2;
+    @apply md:flex-row md:gap-4;
+}
+
+.logo-wrapper {
+    @apply gap-3 items-center !flex;
+    transition: transform 0.2s ease;
+
+    .title {
+        @apply font-sans text-lg font-extrabold text-white h-5;
+        @apply md:hidden lg:block;
+    }
+
+    .subTitle {
+        @apply text-xs text-black;
+        @apply hidden;
+        @apply lg:block;
+    }
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.navList {
+    @apply flex gap-4;
+}
+
+.navLink {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: #facc15; // Tailwind's text-yellow-300
+    }
+}
