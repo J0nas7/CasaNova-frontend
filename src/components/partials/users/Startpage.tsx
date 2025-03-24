@@ -55,7 +55,16 @@ interface StartpageProps {
 }
 
 export const LatestAds: React.FC<StartpageProps> = ({ properties }) => {
-    const latestProperties = properties?.slice(0, 6); // Show only the latest 6 ads
+    if (!Array.isArray(properties) || properties.length === 0) {
+        return (
+            <Block className="mt-8">
+                <Text className="text-2xl font-bold">🆕 Latest Listings</Text>
+                <Text className="text-gray-600 mt-4">No properties available at the moment.</Text>
+            </Block>
+        );
+    }
+
+    const latestProperties = properties.slice(0, 6); // Show only the latest 6 ads
 
     return (
         <Block className="mt-8">
@@ -126,6 +135,24 @@ export const PropertyCategories = () => {
 };
 
 export const PopularCities: React.FC<StartpageProps> = ({ properties }) => {
+    if (!Array.isArray(properties) || properties.length === 0) {
+        return (
+            <Block className="mt-8">
+                <Text className="text-2xl font-bold">🌆 Popular Cities</Text>
+                <Text className="text-gray-600 mt-4">No popular cities to display at the moment.</Text>
+            </Block>
+        );
+    }
+
+    const cityPicture: { [key: string]: string } = {
+        "New York": "https://media.timeout.com/images/105699755/750/422/image.jpg",
+        "Los Angeles": "https://www.thediscoveriesof.com/wp-content/uploads/2023/02/Hollywood-Walk-of-Fame-shutterstock_1054499282.jpg.webp",
+        "Chicago": "https://offloadmedia.feverup.com/secretchicago.com/wp-content/uploads/2021/05/13044548/Riverwalk-1024x608.jpg",
+        "Houston": "https://diamondexchangehouston.com/wp-content/uploads/2022/04/history-of-houston.jpg",
+        "San Francisco": "https://images.fineartamerica.com/images/artworkimages/mediumlarge/3/san-francisco-waterfront-downtown-david-zanzinger.jpg",
+        "Miami": "https://www.chase.com/content/dam/unified-assets/photography/chase/chase-travel/properties/miami/south_beach_ocean_drive_street_16x9.jpg"
+    }
+
     // Count listings for each city
     const cityCounts: { [key: string]: number } = {};
 
@@ -148,15 +175,26 @@ export const PopularCities: React.FC<StartpageProps> = ({ properties }) => {
     return (
         <Block className="mt-8">
             <Text className="text-2xl font-bold">🌆 Popular Cities</Text>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-4">
                 {popularCities.map((city, index) => (
                     <Link
                         key={index}
-                        className="bg-blue-600 text-white p-4 rounded-lg shadow-md text-center"
+                        className="bg-white text-black rounded-lg shadow-md"
                         href={`/search?city=${city.name.replace(/ /g, "+")}`}
                     >
-                        <Text className="text-lg font-semibold">{city.name}</Text>
-                        <Text className="text-sm">Listings: {city.listings}</Text>
+                        <Block className="relative w-full h-32 rounded-md overflow-hidden">
+                            <img
+                                src={cityPicture[city.name] || "https://via.placeholder.com/400x300"}
+                                alt={city.name}
+                                className="w-full h-32 object-cover"
+                            />
+                        </Block>
+                        <Block className="flex flex-col sm:flex-row items-center justify-between p-2">
+                            <Text className="text-lg font-semibold">{city.name}</Text>
+                            <Text className="text-sm text-gray-500">
+                                {city.listings} listing{city.listings > 1 ? "s" : ""}
+                            </Text>
+                        </Block>
                     </Link>
                 ))}
             </div>
@@ -165,6 +203,15 @@ export const PopularCities: React.FC<StartpageProps> = ({ properties }) => {
 };
 
 export const PopularAds: React.FC<StartpageProps> = ({ properties }) => {
+    if (!Array.isArray(properties) || properties.length === 0) {
+        return (
+            <Block className="mt-8">
+                <Text className="text-2xl font-bold">🔥 Most Popular Ads</Text>
+                <Text className="text-gray-600 mt-4">No popular ads to display at the moment.</Text>
+            </Block>
+        );
+    }
+    
     const popularProperties = properties?.sort((a, b) => b.Property_Price_Per_Month - a.Property_Price_Per_Month).slice(0, 3); // Sort by price (as a placeholder for popularity)
 
     return (

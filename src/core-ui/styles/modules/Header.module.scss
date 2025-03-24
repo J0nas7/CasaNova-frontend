@@ -39,7 +39,11 @@
 }
 
 .navList {
-    @apply flex gap-4;
+    @apply flex flex-col gap-4;
+
+    @media (min-width: 334px) {
+        @apply flex-row;
+    }
 }
 
 .navLink {

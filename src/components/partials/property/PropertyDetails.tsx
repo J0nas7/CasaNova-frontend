@@ -59,6 +59,15 @@ interface CardProps {
 export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({ property, authUser }) => {
     const [showMessageComposer, setShowMessageComposer] = useState<boolean>(false)
 
+    if (!property.Property_Title || property.Property_Title === "") {
+        return (
+            <Block className="page-content">
+                <Text>Property not found</Text>
+                <Link href="/search" className="blue-link-light">Go to search</Link>
+            </Block>
+        )
+    }
+
     return (
         <Block className="page-content">
             {/* Jumbotron - Property Images */}

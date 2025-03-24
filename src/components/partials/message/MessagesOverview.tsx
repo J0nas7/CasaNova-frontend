@@ -28,9 +28,7 @@ export const MessagesOverview = () => {
 
     // Fetch messages when user logs in
     useEffect(() => {
-        if (authUser?.User_ID) {
-            readMessagesByUserId(authUser.User_ID);
-        }
+        if (authUser?.User_ID) readMessagesByUserId(authUser.User_ID)
 
         document.title = "Messages - CasaNova";
     }, [authUser]);
@@ -57,9 +55,17 @@ export const MessagesOverview = () => {
                         authUserId={authUser?.User_ID}
                     />
                 ) : (
-                    <div className="h-full flex items-center justify-center text-gray-500">
-                        Select a conversation to start chatting
-                    </div>
+                    <>
+                        {propertyIdFromUrl ? (
+                            <div className="h-full flex items-center justify-center text-gray-500">
+                                The conversation was not found
+                            </div>
+                        ) : (
+                            <div className="h-full flex items-center justify-center text-gray-500">
+                                Select a conversation to start chatting
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
@@ -86,7 +92,18 @@ export const MessagesList: React.FC<MessagesListProps> = ({ messages, authUserId
             });
             setUniqueProperties(propertiesMap);
         }
-    }, [messages]);
+    }, [messages])
+
+    if (!Array.isArray(messages) || !messages.length) {
+        return (
+            <div className="p-4">
+                <h2 className="text-lg font-semibold mb-4">Messages ({Object.keys(uniqueProperties).length})</h2>
+                <div className="flex items-center justify-center h-full text-gray-500">
+                    No messages found
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="p-4">

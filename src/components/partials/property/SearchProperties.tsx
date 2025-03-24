@@ -76,7 +76,7 @@ export const SearchListingsView = () => {
     };
 
     // Filter properties based on search params
-    const filteredProperties = properties.filter((property) => {
+    const filteredProperties = properties.length ? properties.filter((property) => {
         return (
             (filters.city ? property.Property_City.toLowerCase().includes(filters.city.toLowerCase()) : true) &&
             (filters.minPrice ? property.Property_Price_Per_Month >= Number(filters.minPrice) : true) &&
@@ -85,7 +85,7 @@ export const SearchListingsView = () => {
             (filters.bathrooms ? property.Property_Num_Bathrooms >= Number(filters.bathrooms) : true) &&
             (filters.propertyType ? property.Property_Property_Type == Number(filters.propertyType) : true)
         );
-    });
+    }) : [];
 
     const viewAsMap: boolean = searchParams.get("view") === "map";
 
