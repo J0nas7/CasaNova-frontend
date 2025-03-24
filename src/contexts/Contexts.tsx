@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState } from "react"
 
 // Internal
 import { useResourceContext } from "@/contexts"
-import { User, Property, PropertyImage, Message, Favorite, UserFields, PropertyFields } from "@/types"
+import { User, Property, PropertyImage, Message, Favorite, UserFields, PropertyFields, MessageFields } from "@/types"
 import { useAxios } from "@/hooks";
 import { selectAuthUser, selectAuthUserTaskTimeTrack, setAuthUserTaskTimeTrack, useAppDispatch, useAuthActions, useTypedSelector } from "@/redux";
 
@@ -138,6 +138,79 @@ export const usePropertiesContext = () => {
     const context = useContext(PropertiesContext);
     if (!context) {
         throw new Error("usePropertiesContext must be used within a PropertiesProvider");
+    }
+    return context;
+};
+
+// Context for Messages
+export type MessagesContextType = {
+    messages: Message[];
+    messagesById: Message[];
+    messageById: Message | undefined
+    messageDetail: Message | undefined;
+    newMessage: Message | undefined;
+    readMessages: (refresh?: boolean) => Promise<void>
+    readMessagesByUserId: (parentId: number) => Promise<void>
+    readMessageById: (itemId: number) => Promise<void>
+    setMessageDetail: React.Dispatch<React.SetStateAction<Message | undefined>>;
+    handleChangeNewMessage: (field: MessageFields, value: string) => Promise<void>
+    addMessage: (parentId: number, object?: Message) => Promise<void>
+    saveMessageChanges: (messageChanges: Message, parentId: number) => Promise<void>
+    removeMessage: (itemId: number, parentId: number) => Promise<boolean>
+};
+
+const MessagesContext = createContext<MessagesContextType | undefined>(undefined);
+
+export const MessagesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const {
+        items: messages,
+        itemsById: messagesById,
+        itemById: messageById,
+        newItem: newMessage,
+        itemDetail: messageDetail,
+        readItems: readMessages,
+        readItemsById: readMessagesByUserId,
+        readItemById: readMessageById,
+        setItemDetail: setMessageDetail,
+        handleChangeNewItem: handleChangeNewMessage,
+        addItem: addMessage,
+        saveItemChanges: saveMessageChanges,
+        removeItem: removeMessage,
+        // loading: messageLoading,
+        // error: messageError,
+    } = useResourceContext<Message, "Message_ID">(
+        "messages",
+        "Message_ID",
+        "users"
+    );
+
+    return (
+        <MessagesContext.Provider value={{
+            messages,
+            messagesById,
+            messageById,
+            newMessage,
+            messageDetail,
+            readMessages,
+            readMessagesByUserId,
+            readMessageById,
+            setMessageDetail,
+            handleChangeNewMessage,
+            addMessage,
+            saveMessageChanges,
+            removeMessage,
+            // messageLoading,
+            // messageError,
+        }}>
+            {children}
+        </MessagesContext.Provider>
+    );
+};
+
+export const useMessagesContext = () => {
+    const context = useContext(MessagesContext);
+    if (!context) {
+        throw new Error("useMessagesContext must be used within a MessagesProvider");
     }
     return context;
 };

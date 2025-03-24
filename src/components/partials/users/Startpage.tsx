@@ -3,7 +3,7 @@
 // External
 import React, { useEffect } from "react";
 import Link from "next/link";
-import { faBuilding, faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Internal

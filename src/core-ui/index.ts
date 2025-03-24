@@ -6,7 +6,6 @@ export * from './filter-routes'
 
 export * from './components/Header'
 export * from "./components/Footer";
-export * from "./components/LeftNav";
 
 export * from "./components/guest/Jumbotron"
 

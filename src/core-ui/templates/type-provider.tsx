@@ -3,14 +3,14 @@ import React from 'react';
 
 // Internal
 import { 
-    UsersProvider, PropertiesProvider//, PropertyImagesProvider, MessagesProvider, FavoritesProvider,
+    UsersProvider, PropertiesProvider, MessagesProvider//, PropertyImagesProvider, MessagesProvider, FavoritesProvider,
 } from "@/contexts"
 
 const providers = [
     UsersProvider,
     PropertiesProvider,
     // PropertyImagesProvider,
-    // MessagesProvider,
+    MessagesProvider,
     // FavoritesProvider,
 ]
 

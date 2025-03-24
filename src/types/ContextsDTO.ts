@@ -45,7 +45,7 @@ export type Property = {
     Property_UpdatedAt?: string;
 
     // Relationships
-    landlord?: User;
+    user?: User;
     images?: PropertyImage[];
     messages?: Message[];
     favorites?: Favorite[];

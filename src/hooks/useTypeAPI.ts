@@ -43,7 +43,7 @@ export const useTypeAPI = <T extends { [key: string]: any }, IDKey extends keyof
         try {
             // : APIResponse<T[]>
             const data = await httpGetRequest(`${parentResource}/${parentId}/${resource}`);
-            console.log(`${parentResource}/${parentId}/${resource}`, data)
+            console.log(`fetchItemsByParent: ${parentResource}/${parentId}/${resource}`, data)
             
             if (data) return data
 

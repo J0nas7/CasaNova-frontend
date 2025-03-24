@@ -15,7 +15,7 @@ const elements: Record<Variant, ReturnElement> = {
 
 const classes: Record<Variant, string> = {
     h1: 'm-0 my-3 font-roboto font-helvetica font-arial sans-serif font-normal text-2xl leading-[1.235] tracking-[0.00735em] page-title',
-    h2: 'block',
+    h2: 'block font-semibold',
     h3: '',
     p: 'block w-full float-left my-2',
     span: 'block',

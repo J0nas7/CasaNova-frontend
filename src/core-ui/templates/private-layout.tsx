@@ -2,7 +2,7 @@
 import React from "react";
 
 // Internal
-import { Header, LeftNav, Footer } from "../";
+import { Header, Footer } from "../";
 import { TaskDetailWithModal } from "@/components/partials/task/TaskDetails";
 import { TaskTimeTrackPlayer } from "@/components/partials/task/TaskTimeTrackPlayer";
 
@@ -16,7 +16,6 @@ export const PrivateLayout = (
             <Header />
             <div className="content-wrapper">
                 <Footer />
-                {/* <LeftNav /> */}
                 <main className="main-content">
                     {children}
                 </main>
