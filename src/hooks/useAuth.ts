@@ -125,7 +125,8 @@ export const useAuth = () => {
 
     const handleLogoutSubmit = async () => {
         deleteTheCookie("accessToken")
-        window.location.href = "/sign-in"; // Forces a full page reload
+        // window.location.href = "/sign-in"; // Forces a full page reload
+        window.location.reload()
     }
     
     const handleTokenTest = () => {

@@ -177,7 +177,7 @@ export const PropertyMessageComposer: React.FC<PropertyMessageComposerProps> = (
 
     return (
         <Block
-            className="fixed !mt-0 flex w-full h-full items-center justify-center z-10 bg-black bg-opacity-40"
+            className="fixed !mt-0 p-3 flex w-full h-full items-center justify-center z-10 bg-black bg-opacity-40"
             onClick={handleBackgroundClick}
         >
             <Block className="max-w-xl w-full mx-auto p-6 bg-white shadow-lg rounded-lg" ref={messageComposerRef}>

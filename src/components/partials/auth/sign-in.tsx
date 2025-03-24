@@ -31,7 +31,7 @@ export const LoginForm: React.FC = () => {
 
         handleLoginSubmit(userEmail, userPassword)
             .then((loginResult) => {
-                if (loginResult) router.push('/')
+                if (loginResult) window.location.href = window.location.pathname
             })
             .finally(() => {
                 setLoginPending(false)

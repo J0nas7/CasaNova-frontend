@@ -1,10 +1,9 @@
 "use client";
 
 // External
-import React, { useEffect } from "react";
+import React, { use, useEffect, useState } from "react";
 import Link from "next/link";
-import { faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouseChimney } from "@fortawesome/free-solid-svg-icons";
 
 // Internal
 import { Block, FlexibleBox, Text } from "@/components";
@@ -12,34 +11,39 @@ import { selectAuthUser, useTypedSelector } from "@/redux";
 import { usePropertiesContext } from "@/contexts";
 import { Property } from "@/types";
 
-export const Startpage = () => {
-    const authUser = useTypedSelector(selectAuthUser);
-    const { properties, readProperties } = usePropertiesContext();
+// Property type mapping (number -> string)
+const propertyTypeMap: { [key: number]: string } = {
+    1: "Apartment",
+    2: "Room",
+    3: "House",
+    4: "Townhouse",
+};
 
+export const Startpage = () => {
+    const authUser = useTypedSelector(selectAuthUser)
+    const { properties, readProperties } = usePropertiesContext()
+
+    const [numberOfProperties, setNumberOfProperties] = useState<number>(0)
+
+    useEffect(() => { readProperties() }, [])
+    useEffect(() => { setNumberOfProperties(properties.length) }, [properties])
     useEffect(() => {
-        readProperties();
-        document.title = "Welcome - CasaNova";
-    }, []);
+        if (numberOfProperties > 0) {
+            document.title = `Search among ${numberOfProperties} available properties - CasaNova`;
+        }
+    }, [numberOfProperties]);
 
     return (
         <Block className="page-content p-6">
             {/* Welcome Section */}
             <FlexibleBox
-                title={`Hej ${authUser?.User_First_Name} 👋`}
-                titleAction={
-                    <Block className="flex gap-3">
-                        <Link href={`/property/create`} className="inline-flex gap-2 items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
-                            <FontAwesomeIcon icon={faPlus} />
-                            <Text variant="span">Create Property</Text>
-                        </Link>
-                    </Block>
-                }
-                icon={faUser}
+                title={`Search among ${numberOfProperties} available properties`}
+                icon={faHouseChimney}
                 className="no-box w-auto mt-4"
             >
                 <LatestAds properties={properties} />
                 <PropertyCategories />
-                <PopularCities />
+                <PopularCities properties={properties} />
                 <PopularAds properties={properties} />
             </FlexibleBox>
         </Block>
@@ -57,21 +61,34 @@ export const LatestAds: React.FC<StartpageProps> = ({ properties }) => {
         <Block className="mt-8">
             <Text className="text-2xl font-bold">🆕 Latest Listings</Text>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-                {latestProperties?.map((property) => (
-                    <Link key={property.Property_ID} href={`/listing/${property.Property_ID}`} className="group">
-                        <div className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition">
+                {latestProperties?.map((property: Property) => (
+                    <Link
+                        key={property.Property_ID}
+                        href={`/listing/${property.Property_ID}`}
+                        className="bg-white p-4 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition group"
+                    >
+                        <div className="relative w-full h-48 rounded-md overflow-hidden">
                             <img
-                                src={property.images?.[0]?.Image_Image_URL || "https://via.placeholder.com/400x250"}
+                                src={property.images?.[0]?.Image_Image_URL || "https://via.placeholder.com/400x300"}
                                 alt={property.Property_Title}
                                 className="w-full h-48 object-cover group-hover:opacity-80 transition"
                             />
-                            <div className="p-4">
-                                <Text className="text-lg font-semibold text-gray-900">{property.Property_Title}</Text>
-                                <Text className="text-sm text-gray-600">{property.Property_City}, {property.Property_State}</Text>
-                                <Text className="text-lg font-bold text-blue-600 mt-2">
-                                    ${property.Property_Price_Per_Month} / month
-                                </Text>
-                            </div>
+                        </div>
+
+                        <div className="mt-3">
+                            <Text className="text-lg font-semibold">{property.Property_Title}</Text>
+                            <Text className="text-gray-600">
+                                {property.Property_City}, {property.Property_State}
+                            </Text>
+                            <Text className="text-lg font-bold text-green-600">
+                                ${property.Property_Price_Per_Month} / month
+                            </Text>
+                        </div>
+
+                        <div className="flex justify-between items-center mt-3 text-gray-600 text-sm">
+                            <span>{property.Property_Num_Bedrooms} Beds</span>
+                            <span>{property.Property_Num_Bathrooms} Baths</span>
+                            <span>{propertyTypeMap[property.Property_Property_Type]}</span>
                         </div>
                     </Link>
                 ))}
@@ -94,8 +111,8 @@ export const PropertyCategories = () => {
             <Text className="text-2xl font-bold">🏡 Property Categories</Text>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-4">
                 {categories.map((category, index) => (
-                    <Link 
-                        key={index} 
+                    <Link
+                        key={index}
                         className="bg-white p-4 rounded-lg shadow-md flex items-center gap-3"
                         href={`/search${category.id ? `?propertyType=${category.id}` : ""}`}
                     >
@@ -108,22 +125,33 @@ export const PropertyCategories = () => {
     );
 };
 
-export const PopularCities = () => {
-    const popularCities = [
-        { name: "New York", listings: 120 },
-        { name: "Los Angeles", listings: 95 },
-        { name: "San Francisco", listings: 85 },
-        { name: "Chicago", listings: 75 },
-        { name: "Miami", listings: 65 },
-    ];
+export const PopularCities: React.FC<StartpageProps> = ({ properties }) => {
+    // Count listings for each city
+    const cityCounts: { [key: string]: number } = {};
+
+    properties.forEach((property) => {
+        const city = property.Property_City;
+        if (city) {
+            if (!cityCounts[city]) {
+                cityCounts[city] = 0;
+            }
+            cityCounts[city] += 1;
+        }
+    });
+
+    // Convert cityCounts object to an array of popular cities
+    const popularCities = Object.entries(cityCounts).map(([name, listings]) => ({
+        name,
+        listings
+    }));
 
     return (
         <Block className="mt-8">
             <Text className="text-2xl font-bold">🌆 Popular Cities</Text>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-4">
                 {popularCities.map((city, index) => (
-                    <Link 
-                        key={index} 
+                    <Link
+                        key={index}
                         className="bg-blue-600 text-white p-4 rounded-lg shadow-md text-center"
                         href={`/search?city=${city.name.replace(/ /g, "+")}`}
                     >
@@ -143,21 +171,36 @@ export const PopularAds: React.FC<StartpageProps> = ({ properties }) => {
         <Block className="mt-8">
             <Text className="text-2xl font-bold">🔥 Most Popular Ads</Text>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-                {popularProperties?.map((property) => (
-                    <div key={property.Property_ID} className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition">
-                        <img
-                            src={property.images?.[0]?.Image_Image_URL || "https://via.placeholder.com/400x250"}
-                            alt={property.Property_Title}
-                            className="w-full h-48 object-cover"
-                        />
-                        <div className="p-4">
-                            <Text className="text-lg font-semibold text-gray-900">{property.Property_Title}</Text>
-                            <Text className="text-sm text-gray-600">{property.Property_City}</Text>
-                            <Text className="text-lg font-bold text-blue-600 mt-2">
+                {popularProperties?.map((property: Property) => (
+                    <Link
+                        key={property.Property_ID}
+                        href={`/listing/${property.Property_ID}`}
+                        className="bg-white p-4 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition group"
+                    >
+                        <div className="relative w-full h-48 rounded-md overflow-hidden">
+                            <img
+                                src={property.images?.[0]?.Image_Image_URL || "https://via.placeholder.com/400x300"}
+                                alt={property.Property_Title}
+                                className="w-full h-48 object-cover group-hover:opacity-80 transition"
+                            />
+                        </div>
+
+                        <div className="mt-3">
+                            <Text className="text-lg font-semibold">{property.Property_Title}</Text>
+                            <Text className="text-gray-600">
+                                {property.Property_City}, {property.Property_State}
+                            </Text>
+                            <Text className="text-lg font-bold text-green-600">
                                 ${property.Property_Price_Per_Month} / month
                             </Text>
                         </div>
-                    </div>
+
+                        <div className="flex justify-between items-center mt-3 text-gray-600 text-sm">
+                            <span>{property.Property_Num_Bedrooms} Beds</span>
+                            <span>{property.Property_Num_Bathrooms} Baths</span>
+                            <span>{propertyTypeMap[property.Property_Property_Type]}</span>
+                        </div>
+                    </Link>
                 ))}
             </div>
         </Block>

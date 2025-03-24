@@ -33,6 +33,8 @@ export type Property = {
     Property_City: string;
     Property_State: string;
     Property_Zip_Code: string;
+    Property_Latitude: number;
+    Property_Longitude: number;
     Property_Price_Per_Month: number;
     Property_Num_Bedrooms: number;
     Property_Num_Bathrooms: number;

@@ -28,6 +28,7 @@ npm i:
     react-merge-providers
     cookies-next@4.0
     react-dnd react-dnd-html5-backend
+    react-leaflet@4.2.1 leaflet
 
     --save-dev:
         jest @testing-library/react @testing-library/jest-dom @testing-library/user-event
@@ -38,3 +39,4 @@ npm i:
         identity-obj-proxy
         @babel/plugin-transform-runtime @babel/preset-typescript
         @types/quill
+        @types/leaflet
