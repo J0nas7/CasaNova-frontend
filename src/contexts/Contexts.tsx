@@ -82,6 +82,7 @@ export type PropertiesContextType = {
     setPropertyDetail: React.Dispatch<React.SetStateAction<Property | undefined>>;
     handleChangeNewProperty: (field: PropertyFields, value: string) => Promise<void>
     addProperty: (parentId: number, object?: Property) => Promise<void>
+    createPropertyWithImages: (property: Property, images: File[]) => Promise<Property | false>
     savePropertyChanges: (propertyChanges: Property, parentId: number) => Promise<void>
     removeProperty: (itemId: number, parentId: number) => Promise<boolean>
 };
@@ -89,6 +90,8 @@ export type PropertiesContextType = {
 const PropertiesContext = createContext<PropertiesContextType | undefined>(undefined);
 
 export const PropertiesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const { httpPostWithData } = useAxios()
+
     const {
         items: properties,
         itemsById: propertiesById,
@@ -110,6 +113,17 @@ export const PropertiesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         "Property_ID",
         "users"
     );
+    
+    const createPropertyWithImages = async (property: Property, images: File[]) => {
+        console.log("createPropertyWithImages", property, images)
+        const result = await httpPostWithData("createPropertyWithImages", { ...property, images })
+        
+        if (result.property) {
+            return result.property
+        } else {
+            return false
+        }
+    }
 
     return (
         <PropertiesContext.Provider value={{
@@ -124,6 +138,7 @@ export const PropertiesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             setPropertyDetail,
             handleChangeNewProperty,
             addProperty,
+            createPropertyWithImages,
             savePropertyChanges,
             removeProperty,
             // propertyLoading,

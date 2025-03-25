@@ -11,9 +11,10 @@ import L from "leaflet";
 // Internal
 import { Block, Text, Field } from "@/components";
 import { usePropertiesContext } from "@/contexts";
-import { Property } from "@/types";
+import { Property, propertyTypeMap } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faMap, faSliders } from "@fortawesome/free-solid-svg-icons";
+import { PropertyImageCard } from "./image/PropertyImage";
 
 // Filters interface
 interface Filters {
@@ -24,22 +25,6 @@ interface Filters {
     bedrooms: string;
     bathrooms: string;
 }
-
-// Property type mapping (number -> string)
-const propertyTypeMap: { [key: number]: string } = {
-    1: "Apartment",
-    2: "Room",
-    3: "House",
-    4: "Townhouse",
-};
-
-// Reverse mapping (string -> number)
-const reversePropertyTypeMap: { [key: string]: number } = {
-    Apartment: 1,
-    Room: 2,
-    House: 3,
-    Townhouse: 4,
-};
 
 export const SearchListingsView = () => {
     const [toggleChecked, setToggleChecked] = React.useState(false);
@@ -246,32 +231,30 @@ interface PropertyCardProps {
     property: Property;
 }
 
-const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => (
-    <Link
-        href={`/listing/${property.Property_ID}`}
-        className="bg-white p-4 rounded-lg shadow-md transition hover:shadow-lg"
-    >
-        <div className="relative w-full h-48 rounded-md overflow-hidden">
-            <img
-                src={property.images?.[0]?.Image_Image_URL || "https://via.placeholder.com/400x300"}
-                alt={property.Property_Title}
-                className="w-full h-full object-cover"
-            />
-        </div>
+const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
+    return (
+        <Link
+            href={`/listing/${property.Property_ID}`}
+            className="bg-white p-4 rounded-lg shadow-md transition hover:shadow-lg"
+        >
+            <div className="relative w-full h-48 rounded-md overflow-hidden">
+                <PropertyImageCard property={property} className="w-full h-full object-cover" />
+            </div>
 
-        <div className="mt-3">
-            <Text className="text-lg font-semibold">{property.Property_Title}</Text>
-            <Text className="text-gray-600">{property.Property_City}, {property.Property_State}</Text>
-            <Text className="text-lg font-bold text-green-600">${property.Property_Price_Per_Month} / month</Text>
-        </div>
+            <div className="mt-3">
+                <Text className="text-lg font-semibold">{property.Property_Title}</Text>
+                <Text className="text-gray-600">{property.Property_City}</Text>
+                <Text className="text-lg font-bold text-green-600">${property.Property_Price_Per_Month} / month</Text>
+            </div>
 
-        <div className="flex justify-between items-center mt-3 text-gray-600 text-sm">
-            <span>{property.Property_Num_Bedrooms} Beds</span>
-            <span>{property.Property_Num_Bathrooms} Baths</span>
-            <span>{propertyTypeMap[property.Property_Property_Type]}</span>
-        </div>
-    </Link>
-);
+            <div className="flex justify-between items-center mt-3 text-gray-600 text-sm">
+                <span>{property.Property_Num_Bedrooms} Beds</span>
+                <span>{property.Property_Num_Bathrooms} Baths</span>
+                <span>{propertyTypeMap[property.Property_Property_Type]}</span>
+            </div>
+        </Link>
+    );
+}
 
 interface PropertyListProps {
     properties: Property[];
@@ -330,18 +313,14 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties }) => {
                         <Popup>
                             <Link href={`/listing/${property.Property_ID}`} className="block w-[280px] h-[110px]">
                                 <div className="flex gap-2">
-                                    {/* Property Image */}
-                                    <img
-                                        src={property.images?.[0]?.Image_Image_URL || "https://via.placeholder.com/400x300"}
-                                        alt={property.Property_Title}
-                                        className="w-1/3 h-[110px] object-cover rounded-lg"  // Fixed width for the image
-                                    />
+                                    {/* Property Image with Fixed Width */}
+                                    <PropertyImageCard property={property} className="w-1/3 h-[110px] object-cover rounded-lg" />
 
                                     <div className="flex-1 flex flex-col justify-between">
-                                        {/* Property City and State */}
+                                        {/* Property Postal Code and City */}
                                         <div className="text-sm text-gray-600">
                                             <span className="font-semibold">{property.Property_City}</span>
-                                            <span className="ml-2 text-gray-500">{property.Property_State}</span>
+                                            <span className="ml-2 text-gray-500">{property.Property_Zip_Code}</span>
                                         </div>
 
                                         {/* Property Title */}

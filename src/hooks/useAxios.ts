@@ -52,11 +52,30 @@ export const useAxios = () => {
         // Check if postContent contains a file (e.g., image file) and use FormData if it does
         let dataToSend: any = postContent;
 
-        if (postContent && Object.values(postContent).some((value) => value instanceof File)) {
+        if (postContent && (Object.values(postContent).some((value) => value instanceof File || Array.isArray(value)))) {
             const formData = new FormData();
             for (const key in postContent) {
-                formData.append(key, postContent[key]);
+                if (key === "images" && Array.isArray(postContent[key])) {
+                    // Append each image separately under the same key
+                    postContent[key].forEach((file) => {
+                        formData.append("images[]", file);
+                    });
+                } else {
+                    let value = postContent[key];
+
+                    // Convert "true" and "false" strings to actual booleans
+                    if (value === "true") value = true;
+                    if (value === "false") value = false;
+
+                    // Convert booleans to JSON string, so the backend can properly interpret them
+                    if (typeof value === "boolean") {
+                        value = JSON.stringify(value);
+                    }
+
+                    formData.append(key, value);
+                }
             }
+            console.log("formData", formData)
             dataToSend = formData;
             // Adjust headers for file upload
             if (config.headers) config.headers['Content-Type'] = 'multipart/form-data';

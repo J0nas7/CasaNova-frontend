@@ -31,7 +31,7 @@ export type Property = {
     Property_Description: string;
     Property_Address: string;
     Property_City: string;
-    Property_State: string;
+    // Property_State: string;
     Property_Zip_Code: string;
     Property_Latitude: number;
     Property_Longitude: number;
@@ -55,24 +55,36 @@ export type Property = {
 
 export type PropertyFields =
     "Property_ID" | "User_ID" | "Property_Title" | "Property_Description" |
-    "Property_Address" | "Property_City" | "Property_State" | "Property_Zip_Code" |
-    "Property_Price_Per_Month" | "Property_Num_Bedrooms" | "Property_Num_Bathrooms" |
-    "Property_Square_Feet" | "Property_Amenities" | "Property_Property_Type" |
-    "Property_Available_From" | "Property_Is_Active" | "Property_CreatedAt" | "Property_UpdatedAt";
+    "Property_Address" | "Property_City" | "Property_Zip_Code" |
+    "Property_Latitude" | "Property_Longitude" | "Property_Price_Per_Month" |
+    "Property_Num_Bedrooms" | "Property_Num_Bathrooms" | "Property_Square_Feet" |
+    "Property_Amenities" | "Property_Property_Type" | "Property_Available_From" |
+    "Property_Is_Active" | "Property_CreatedAt" | "Property_UpdatedAt";
+
+// Property type mapping (number -> string)
+export const propertyTypeMap: { [key: number]: string } = {
+    1: "Apartment",
+    2: "Room",
+    3: "House",
+    4: "Townhouse",
+}
 
 // PropertyImage Type
 export type PropertyImage = {
-    Image_ID?: number;
-    Property_ID: number;
-    Image_Image_URL: string;
-    Image_Is_Featured: boolean;
+    Image_ID?: number; // Primary key
+    Property_ID?: number; // Foreign key to CN_Properties
+    Image_Name?: string; // File name
+    Image_Path?: string; // Storage path
+    Image_Type?: string; // File type (image, video, etc.)
+    Image_URL?: string; // Image URL
+    Image_Is_Featured: boolean; // Mark the featured image
 
     // Relationships
     property?: Property;
 };
 
 export type PropertyImageFields =
-    "Image_ID" | "Property_ID" | "Image_Image_URL" | "Image_Is_Featured";
+    "Image_ID" | "Property_ID" | "Image_URL" | "Image_Is_Featured";
 
 // Message Type
 export type Message = {

@@ -9,15 +9,8 @@ import { faHouseChimney } from "@fortawesome/free-solid-svg-icons";
 import { Block, FlexibleBox, Text } from "@/components";
 import { selectAuthUser, useTypedSelector } from "@/redux";
 import { usePropertiesContext } from "@/contexts";
-import { Property } from "@/types";
-
-// Property type mapping (number -> string)
-const propertyTypeMap: { [key: number]: string } = {
-    1: "Apartment",
-    2: "Room",
-    3: "House",
-    4: "Townhouse",
-};
+import { Property, propertyTypeMap } from "@/types";
+import { PropertyImageCard } from "../property/image/PropertyImage";
 
 export const Startpage = () => {
     const authUser = useTypedSelector(selectAuthUser)
@@ -77,9 +70,8 @@ export const LatestAds: React.FC<StartpageProps> = ({ properties }) => {
                         className="bg-white p-4 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition group"
                     >
                         <div className="relative w-full h-48 rounded-md overflow-hidden">
-                            <img
-                                src={property.images?.[0]?.Image_Image_URL || "https://via.placeholder.com/400x300"}
-                                alt={property.Property_Title}
+                            <PropertyImageCard
+                                property={property}
                                 className="w-full h-48 object-cover group-hover:opacity-80 transition"
                             />
                         </div>
@@ -87,7 +79,7 @@ export const LatestAds: React.FC<StartpageProps> = ({ properties }) => {
                         <div className="mt-3">
                             <Text className="text-lg font-semibold">{property.Property_Title}</Text>
                             <Text className="text-gray-600">
-                                {property.Property_City}, {property.Property_State}
+                                {property.Property_City}
                             </Text>
                             <Text className="text-lg font-bold text-green-600">
                                 ${property.Property_Price_Per_Month} / month
@@ -150,7 +142,8 @@ export const PopularCities: React.FC<StartpageProps> = ({ properties }) => {
         "Chicago": "https://offloadmedia.feverup.com/secretchicago.com/wp-content/uploads/2021/05/13044548/Riverwalk-1024x608.jpg",
         "Houston": "https://diamondexchangehouston.com/wp-content/uploads/2022/04/history-of-houston.jpg",
         "San Francisco": "https://images.fineartamerica.com/images/artworkimages/mediumlarge/3/san-francisco-waterfront-downtown-david-zanzinger.jpg",
-        "Miami": "https://www.chase.com/content/dam/unified-assets/photography/chase/chase-travel/properties/miami/south_beach_ocean_drive_street_16x9.jpg"
+        "Miami": "https://www.chase.com/content/dam/unified-assets/photography/chase/chase-travel/properties/miami/south_beach_ocean_drive_street_16x9.jpg",
+        "Virum": "https://www.landskabsarkitekter.dk/wp-content/uploads/2023/08/U34_Base-Camp-Lyngby_1920-1920x1080.jpg",
     }
 
     // Count listings for each city
@@ -211,7 +204,7 @@ export const PopularAds: React.FC<StartpageProps> = ({ properties }) => {
             </Block>
         );
     }
-    
+
     const popularProperties = properties?.sort((a, b) => b.Property_Price_Per_Month - a.Property_Price_Per_Month).slice(0, 3); // Sort by price (as a placeholder for popularity)
 
     return (
@@ -225,9 +218,8 @@ export const PopularAds: React.FC<StartpageProps> = ({ properties }) => {
                         className="bg-white p-4 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition group"
                     >
                         <div className="relative w-full h-48 rounded-md overflow-hidden">
-                            <img
-                                src={property.images?.[0]?.Image_Image_URL || "https://via.placeholder.com/400x300"}
-                                alt={property.Property_Title}
+                            <PropertyImageCard
+                                property={property}
                                 className="w-full h-48 object-cover group-hover:opacity-80 transition"
                             />
                         </div>
@@ -235,7 +227,7 @@ export const PopularAds: React.FC<StartpageProps> = ({ properties }) => {
                         <div className="mt-3">
                             <Text className="text-lg font-semibold">{property.Property_Title}</Text>
                             <Text className="text-gray-600">
-                                {property.Property_City}, {property.Property_State}
+                                {property.Property_City}
                             </Text>
                             <Text className="text-lg font-bold text-green-600">
                                 ${property.Property_Price_Per_Month} / month

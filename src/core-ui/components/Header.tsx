@@ -4,7 +4,7 @@ import React, { FormEvent, useEffect, useState } from "react"
 import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDoorOpen, faEnvelope, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faDoorOpen, faEnvelope, faHouseChimney, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/navigation"
 
@@ -69,6 +69,19 @@ export const Header: React.FC = () => {
                                             )}
                                         >
                                             <Text variant="span" className="text-sm text-white">{authUser.User_First_Name} {authUser.User_Last_Name}</Text>
+                                        </Link>
+                                    </Block>
+                                </li>
+                                <li>
+                                    <Block variant="span" className="flex items-center space-x-3">
+                                        <FontAwesomeIcon icon={faHouseChimney} />
+                                        <Link
+                                            href="/new-listing"
+                                            className={clsx(
+                                                `inline-block text-sm`
+                                            )}
+                                        >
+                                            <Text variant="span" className="text-sm text-white">New Listing</Text>
                                         </Link>
                                     </Block>
                                 </li>
