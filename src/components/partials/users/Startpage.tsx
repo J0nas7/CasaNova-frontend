@@ -57,7 +57,9 @@ export const LatestAds: React.FC<StartpageProps> = ({ properties }) => {
         );
     }
 
-    const latestProperties = properties.slice(0, 6); // Show only the latest 6 ads
+    const latestProperties = properties
+        .sort((a, b) => (b.Property_ID ?? 0) - (a.Property_ID ?? 0)) // Sort by Property_ID in descending order
+        .slice(0, 6); // Show only the latest 6 ads
 
     return (
         <Block className="mt-8">

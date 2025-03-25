@@ -20,6 +20,7 @@ import { selectAuthUser, useTypedSelector } from '@/redux';
 import { FlexibleBox } from '@/components/ui/flexible-box';
 import { LoginForm } from '../auth/sign-in';
 import { PropertyImageCard } from './image/PropertyImage';
+import clsx from 'clsx';
 
 const PropertyDetails: React.FC = () => {
     const router = useRouter()
@@ -106,7 +107,7 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({ proper
 
 export const JumbotronHighlightImage: React.FC<{ image: PropertyImage, property: Property, setShowJumbotronHighlightImage: React.Dispatch<React.SetStateAction<PropertyImage | undefined>> }> = ({ image, property, setShowJumbotronHighlightImage }) => {
     const jumbotronHighlightImageRef = useRef<HTMLDivElement>(null);
-    
+
     // Handle clicks outside taskDetailContainer but inside taskDetailModalBackground
     const handleBackgroundClick = (event: React.MouseEvent<HTMLDivElement>) => {
         if (jumbotronHighlightImageRef.current && !jumbotronHighlightImageRef.current.contains(event.target as Node)) {
@@ -130,17 +131,17 @@ export const JumbotronHighlightImage: React.FC<{ image: PropertyImage, property:
             document.body.style.overflow = ''; // Restore scrolling on unmount
         };
     }, [])
-    
+
     return (
-        <Block 
+        <Block
             className="fixed !mt-0 p-3 flex w-full h-full items-center justify-center z-10 bg-black bg-opacity-50"
             onClick={handleBackgroundClick}
         >
             <Block
-                className="relative max-w-4xl w-full max-h-full mx-auto p-1 bg-white shadow-lg rounded-lg"
+                className="relative max-w-4xl w-full max-h-full p-1 bg-white shadow-lg rounded-lg"
                 ref={jumbotronHighlightImageRef}
             >
-                <button 
+                <button
                     className="absolute w-10 h-10 left-auto top-3 right-3 z-10 bg-black bg-opacity-50 text-white p-2 rounded-full"
                     onClick={() => setShowJumbotronHighlightImage(undefined)}
                 >
@@ -154,8 +155,8 @@ export const JumbotronHighlightImage: React.FC<{ image: PropertyImage, property:
                     setShowJumbotronHighlightImage={setShowJumbotronHighlightImage}
                     classNames={{
                         rotationWrapper: "w-full h-full p-1 flex items-center justify-center",
-                        rotationImageWrapper: "relative w-full h-auto max-h-full",
-                        rotationImage: "w-full h-auto max-h-full",
+                        rotationImageWrapper: "relative w-auto h-auto",
+                        rotationImage: "w-auto h-auto max-h-[90vh]",
                     }}
                 />
             </Block>
@@ -184,25 +185,95 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
     setShowJumbotronHighlightImage,
     classNames
 }) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const [currentRight, setCurrentRight] = useState<number>(0);
+    const [nextRight, setNextRight] = useState<number>(100);
+    const [rotationEnabled, setRotationEnabled] = useState<boolean>(enableAutoRotation);
     const imageCount = property.images?.length || 0;
 
-    // Handle the interval logic based on enableAutoRotation
-    useEffect(() => {
-        if (enableAutoRotation && imageCount > numberInRotation) {
-            const interval = setInterval(() => {
-                setCurrentIndex((prevIndex) => (prevIndex + 1) % imageCount);
-            }, 3000); // Rotate every 3 seconds
+    /**
+     * Methods
+     */
 
-            return () => clearInterval(interval);
+    // Function to run slider animation
+    const runSliderAnimation = (duration = 1000, reverse = false) => {
+        const stepTime = 10; // Update every 10ms
+        const steps = duration / stepTime;
+        const increment = 100 / steps;
+
+        let current = reverse ? -100 : 0;
+        let next = reverse ? 0 : 100;
+
+        const currentInterval = setInterval(() => {
+            current += reverse ? increment : -increment;
+            if ((reverse && current >= 0) || (!reverse && current <= -100)) {
+                current = reverse ? 0 : -100;
+                clearInterval(currentInterval);
+            }
+            setCurrentRight(Math.round(current));
+        }, stepTime);
+
+        const nextInterval = setInterval(() => {
+            next += reverse ? increment : -increment;
+            if ((reverse && next >= 100) || (!reverse && next <= 0)) {
+                next = reverse ? 100 : 0;
+                clearInterval(nextInterval);
+            }
+            setNextRight(Math.round(next));
+        }, stepTime);
+    }
+
+    useEffect(() => {
+        if (rotationEnabled && imageCount > numberInRotation) {
+            const mainInterval = setInterval(() => {
+                runSliderAnimation()
+            }, 3000); // Run every 3 seconds
+
+            return () => clearInterval(mainInterval);
         }
-    }, [imageCount, enableAutoRotation, numberInRotation]);
+    }, [imageCount, rotationEnabled, numberInRotation]);
+
+    // Handle the interval logic based on rotationEnabled
+    useEffect(() => {
+        let timeout: NodeJS.Timeout | null = null;
+        let interval: NodeJS.Timeout | null = null;
+
+        if (rotationEnabled && imageCount > numberInRotation) {
+            console.log("Starting rotation (delay first by 3s)");
+
+            timeout = setTimeout(() => {
+                interval = setInterval(() => {
+                    if (rotationEnabled) {
+                        console.log("Rotating to next image", rotationEnabled);
+                        setCurrentIndex((prevIndex) => (prevIndex + 1) % imageCount);
+                    }
+                }, 3000); // Rotate every 3 seconds after initial delay
+            }, 3000); // Delay first rotation by 3 seconds
+        } else {
+            console.log("Rotation disabled");
+        }
+
+        return () => {
+            if (timeout) {
+                clearTimeout(timeout);
+                console.log("First delay cleared");
+            }
+            if (interval) {
+                clearInterval(interval);
+                console.log("Interval cleared");
+            }
+        };
+    }, [imageCount, rotationEnabled, numberInRotation]);
 
     const handlePrev = () => {
+        setRotationEnabled(false)
+        runSliderAnimation(250, true)
         setCurrentIndex((prevIndex) => (prevIndex - 1 + imageCount) % imageCount);
     };
 
     const handleNext = () => {
+        setRotationEnabled(false)
+        runSliderAnimation(250)
         setCurrentIndex((prevIndex) => (prevIndex + 1) % imageCount);
     };
 
@@ -215,16 +286,20 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
 
     // Get the N images in rotation (in this case, `numberInRotation` is dynamic)
     const currentImages = imageCount > 0 && property.images
-        ? Array.from({ length: numberInRotation }).map((_, i) => {
-            if (!property.images) return undefined
+        ? Array.from({ length: Math.min(numberInRotation, imageCount) }).map((_, i) => {
+            if (!property.images) return undefined;
 
             const index = (currentIndex + i) % imageCount;
-            return property.images[index];
+            const nextIndex = (index + 1) % imageCount;
+            return {
+                current: property.images[index],
+                next: property.images[nextIndex],
+            };
         })
         : [];
 
     return (
-        <div className="relative">
+        <div className="relative max-h-full">
             {/* Image Grid */}
             <div className={classNames.rotationWrapper}>
                 {currentImages.length > 0 ? (
@@ -232,15 +307,50 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
                         <div
                             key={i}
                             className={classNames.rotationImageWrapper}
-                            onClick={() => setShowJumbotronHighlightImage(image!)}
+                            onClick={() => setShowJumbotronHighlightImage(
+                                currentRight === -100 ? image?.next!
+                                    : image?.current!
+                            )}
                         >
                             <img
-                                src={image?.Image_URL || `http://localhost:8000/storage/${image?.Image_Path}`}
+                                src={image?.current?.Image_URL || `http://localhost:8000/storage/${image?.current?.Image_Path}`}
                                 alt={`Property Image ${currentIndex + i + 1}`}
-                                className={classNames.rotationImage}
+                                className={clsx(
+                                    classNames.rotationImage,
+                                    { ["absolute"]: numberInRotation > 1 }
+                                )}
+                                style={{ left: `${(currentRight)}%` }}
                             />
-                            <span className="absolute top-auto left-auto bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                                {currentIndex + i + 1} / {imageCount}
+                            <img
+                                src={image?.next?.Image_URL || `http://localhost:8000/storage/${image?.next?.Image_Path}`}
+                                alt={`Property Image ${currentIndex + i + 2}`}
+                                className={clsx(
+                                    classNames.rotationImage,
+                                    { ["absolute left-auto"]: numberInRotation > 1 },
+                                    { ["hidden"]: numberInRotation === 1 },
+                                )}
+                                style={{ right: `-${nextRight}%` }}
+                            />
+                            <span
+                                className={clsx(
+                                    "absolute top-auto left-auto bottom-2 right-0 mr-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded",
+                                    { ["hidden"]: (
+                                        currentRight === -100 && numberInRotation > 1
+                                    ) }
+                                )}
+                            >
+                                {(currentIndex + i) % imageCount + 1} / {imageCount}
+                            </span>
+                            <span
+                                className={clsx(
+                                    "absolute top-auto left-auto bottom-2 mr-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded",
+                                    { ["hidden"]: numberInRotation === 1 }
+                                )}
+                                style={{
+                                    right: (numberInRotation > 1 ? `-${nextRight}%` : "8px"),
+                                }}
+                            >
+                                {(currentIndex + i + 1) % imageCount + 1} / {imageCount}
                             </span>
                         </div>
                     ))
@@ -292,7 +402,10 @@ export const PropertyInformationSection: React.FC<PropertyInformationSectionProp
         {/* Left Section - Title & Description */}
         <div className="col-span-2 bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold mb-4">{property.Property_Title}</h2>
-            <p className="text-gray-600">{property.Property_Description}</p>
+            <div
+                className="text-gray-600"
+                dangerouslySetInnerHTML={{ __html: property.Property_Description }}
+            />
         </div>
 
         {/* Right Section - Property Details */}
