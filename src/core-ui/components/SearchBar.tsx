@@ -4,7 +4,7 @@ import { useAxios, useDebounce } from "@/hooks";
 import { selectAuthUser, useTypedSelector } from "@/redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { Organisation, Project, Task, Team, User } from "@/types";
+import { User } from "@/types";
 import { useRouter } from "next/navigation";
 
 const SearchTextRotator = () => {
@@ -119,58 +119,33 @@ const SearchBar = () => {
                 const user: User = item
                 return (
                     <div key={user.User_ID} className="flex items-center space-x-3">
-                        {user.User_ImageSrc ? (
+                        {user.User_Profile_Picture ? (
                             <img
-                                src={user.User_ImageSrc}
-                                alt={user.User_FirstName}
+                                src={user.User_Profile_Picture}
+                                alt={user.User_First_Name}
                                 className="w-10 h-10 rounded-full border border-gray-300"
                             />
                         ) : (
                             <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-white font-semibold rounded-full">
-                                {user.User_FirstName?.charAt(0)}{user.User_Surname?.charAt(0)}
+                                {user.User_First_Name?.charAt(0)}{user.User_Last_Name?.charAt(0)}
                             </div>
                         )}
                         <div>
-                            <p className="font-semibold">{user.User_FirstName} {user.User_Surname}</p>
+                            <p className="font-semibold">{user.User_First_Name} {user.User_Last_Name}</p>
                             <p className="text-sm text-gray-500">{user.User_Email}</p>
-                            <p className="text-xs text-gray-400">Status: {user.User_Status}</p>
+                            <p className="text-xs text-gray-400">Role: {user.User_Role}</p>
                         </div>
                     </div>
                 );
-            case "GT_Organisations":
-                const organisation: Organisation = item
-                return (
-                    <div key={organisation.Organisation_ID} className="space-y-2">
-                        <p className="font-semibold">{organisation.Organisation_Name}</p>
-                        <p className="text-sm text-gray-500">{organisation.Organisation_Description}</p>
-                    </div>
-                );
-            case "GT_Teams":
-                const team: Team = item
-                return (
-                    <div key={team.Team_ID} className="space-y-2">
-                        <p className="font-semibold">{team.Team_Name}</p>
-                        <p className="text-sm text-gray-500">{team.Team_Description}</p>
-                    </div>
-                );
-            case "GT_Projects":
-                const project: Project = item
-                return (
-                    <div key={project.Project_ID} className="space-y-2">
-                        <p className="font-semibold">{project.Project_Name}</p>
-                        <p className="text-sm text-gray-500">Key: {project.Project_Key}</p>
-                        <p className="text-xs text-gray-400">Status: {project.Project_Status}</p>
-                    </div>
-                );
-            case "GT_Tasks":
-                const task: Task = item
-                return (
-                    <div key={task.Task_ID} className="space-y-2">
-                        <p className="font-semibold">{task.Task_Title}</p>
-                        <p className="text-sm text-gray-500">Assigned To: {task.Assigned_User_ID}</p>
-                        <p className="text-xs text-gray-400">Status: {task.Task_Status}</p>
-                    </div>
-                );
+            // case "GT_Projects":
+            //     const project: Project = item
+            //     return (
+            //         <div key={project.Project_ID} className="space-y-2">
+            //             <p className="font-semibold">{project.Project_Name}</p>
+            //             <p className="text-sm text-gray-500">Key: {project.Project_Key}</p>
+            //             <p className="text-xs text-gray-400">Status: {project.Project_Status}</p>
+            //         </div>
+            //     );
             default:
                 return <div key={item.id}>{JSON.stringify(item)}</div>;
         }
@@ -182,26 +157,11 @@ const SearchBar = () => {
             case "GT_Users":
                 const user: User = item
                 break
-            case "GT_Organisations":
-                const organisation: Organisation = item
-                router.push(`/organisation/${organisation.Organisation_ID}`)
-                clearSearch()
-                break
-            case "GT_Teams":
-                const team: Team = item
-                router.push(`/team/${team.Team_ID}`)
-                clearSearch()
-                break
-            case "GT_Projects":
-                const project: Project = item
-                router.push(`/project/${project.Project_ID}`)
-                clearSearch()
-                break
-            case "GT_Tasks":
-                const task: Task = item
-                router.push(`/task/${task.project?.Project_Key}/${task.Task_Key}`)
-                clearSearch()
-                break
+            // case "GT_Projects":
+            //     const project: Project = item
+            //     router.push(`/project/${project.Project_ID}`)
+            //     clearSearch()
+            //     break
             default:
                 return null
         }

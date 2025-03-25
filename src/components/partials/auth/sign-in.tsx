@@ -2,7 +2,7 @@
 
 // External
 import Link from "next/link"
-import { FormEvent, useEffect, useState } from "react"
+import React, { FormEvent, useEffect, useState } from "react"
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/navigation"
 

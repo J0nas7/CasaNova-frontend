@@ -3,7 +3,7 @@ import { Dispatch } from 'redux'
 
 // Internal
 import { useAxios, useCookies } from '@/hooks'
-import { setAuthUser, setAuthUserOrganisation, setAuthUserSeat, setAuthUserTaskTimeTrack, setIsLoggedIn } from '../slices/authSlice'
+import { setAuthUser, setIsLoggedIn } from '../slices/authSlice'
 
 export const useAuthActions = () => {
     const { deleteTheCookie } = useCookies()
@@ -33,13 +33,6 @@ export const useAuthActions = () => {
                 // dispatch(setRefreshToken({ "data": jwtData.refreshToken }))
                 dispatch(setIsLoggedIn({ "data": true }))
                 dispatch(setAuthUser({ "data": data.userData }))
-                
-                if (Array.isArray(data.userSeats) && data.userSeats.length) {
-                    dispatch(setAuthUserSeat({ "data": data.userSeats[0] }))
-                }
-                
-                dispatch(setAuthUserOrganisation({ "data": data.userOrganisation }))
-                dispatch(setAuthUserTaskTimeTrack(data.userActiveTimeTrack))
             } else {
                 deleteTheCookie("accessToken")
                 // Optionally handle the "not logged in" scenario

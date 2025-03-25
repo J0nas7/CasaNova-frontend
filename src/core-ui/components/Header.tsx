@@ -33,7 +33,7 @@ export const Header: React.FC = () => {
                     <Block className={styles['logo-wrapper']}>
                         <Image
                             src="/casanova-logo.png"
-                            alt="Logo"
+                            alt="CasaNova Logo"
                             width={54}
                             height={36}
                         />

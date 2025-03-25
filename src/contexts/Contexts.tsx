@@ -4,10 +4,10 @@
 import React, { createContext, useContext, useState } from "react"
 
 // Internal
-import { useResourceContext } from "@/contexts"
+import { useResourceContext } from "@/contexts/TypeContext"
 import { User, Property, PropertyImage, Message, Favorite, UserFields, PropertyFields, MessageFields } from "@/types"
 import { useAxios } from "@/hooks";
-import { selectAuthUser, selectAuthUserTaskTimeTrack, setAuthUserTaskTimeTrack, useAppDispatch, useAuthActions, useTypedSelector } from "@/redux";
+import { selectAuthUser, useAppDispatch, useAuthActions, useTypedSelector } from "@/redux";
 
 // Context for Users
 export type UsersContextType = {
@@ -87,7 +87,7 @@ export type PropertiesContextType = {
     removeProperty: (itemId: number, parentId: number) => Promise<boolean>
 };
 
-const PropertiesContext = createContext<PropertiesContextType | undefined>(undefined);
+export const PropertiesContext = createContext<PropertiesContextType | undefined>(undefined);
 
 export const PropertiesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { httpPostWithData } = useAxios()

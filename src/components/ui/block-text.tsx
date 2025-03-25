@@ -1,4 +1,4 @@
-import { CSSProperties, forwardRef, LegacyRef } from "react"
+import React, { CSSProperties, forwardRef } from "react";
 
 type Variant = 'h1' | 'h2' | 'h3' | 'p' | 'span' | 'small' | 'div'
 type ReturnElement = 'h1' | 'h2' | 'h3' | 'p' | 'span' | 'small' | 'div'

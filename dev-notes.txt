@@ -12,6 +12,9 @@ Add a second describe() => {}, testing 5 new edge cases.
 Network hosting:
 npm run dev -- -H 192.168.50.86
 
+Re-running tests as you change files
+npm test -- --watch
+
 npm i:
     sass
     clsx
@@ -35,8 +38,10 @@ npm i:
         @types/jest
         ts-node typescript ts-jest
         jest-environment-jsdom @types/testing-library__jest-dom
-        babel-jest @babel/core @babel/preset-env @babel/preset-react
+        babel-jest @babel/preset-env @babel/preset-react @babel/preset-typescript
+        redux-mock-store @types/redux-mock-store
+        @babel/core
         identity-obj-proxy
-        @babel/plugin-transform-runtime @babel/preset-typescript
+        @babel/plugin-transform-runtime
         @types/quill
         @types/leaflet
