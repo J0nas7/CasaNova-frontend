@@ -152,7 +152,7 @@ export const Header: React.FC = () => {
                                         </Block>
                                     </Block>
                                     {showLoginForm && (
-                                        <Block className="absolute w-[300px] bg-white p-4 top-7 left-auto right-0 rounded-lg shadow-lg">
+                                        <Block className={styles.loginModal}>
                                             <LoginForm />
                                         </Block>
                                     )}

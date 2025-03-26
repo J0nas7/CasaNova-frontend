@@ -1,5 +1,5 @@
 .footer {
-    @apply fixed w-full top-auto bottom-0 bg-gray-300 text-gray-400 p-4 text-center;
+    @apply fixed w-full z-10 top-auto bottom-0 bg-gray-300 text-gray-400 p-4 text-center;
 
     .link {
         color: #fff; // Tailwind's text-white

@@ -55,7 +55,7 @@
 
     &.authUser {
         @apply flex flex-col items-center gap-10;
-        @apply fixed left-full;
+        @apply fixed !z-[21] left-full;
         @apply bg-gray-500 bg-opacity-90;
         @apply w-full h-screen p-6;
         transition: left 0.2s ease;
@@ -87,5 +87,17 @@
 
     &:hover {
         color: #facc15; // Tailwind's text-yellow-300
+    }
+}
+
+.loginModal {
+    @apply absolute w-screen bg-white p-4 top-7 left-1/2 transform -translate-x-1/2 rounded-lg shadow-lg;
+
+    @media (min-width: 350px) {
+        @apply w-[300px];
+    }
+
+    @media (min-width: 768px) {
+        @apply left-auto right-0 transform-none translate-x-0;
     }
 }

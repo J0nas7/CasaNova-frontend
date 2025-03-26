@@ -78,9 +78,9 @@ export const SearchListingsView = () => {
     if (viewAsMap) {
         return (
             <>
-                <Block className="page-content relative h-screen md:h-full !p-0 flex gap-0 flex-col md:flex-row">
+                <Block className="page-content relative z-[8] h-screen md:h-full !p-0 flex gap-0 flex-col md:flex-row">
                     <span
-                        className="toggler absolute top-5 left-auto right-3 z-[500] rounded-full bg-white p-2 shadow-md cursor-pointer md:hidden"
+                        className="toggler absolute top-5 left-auto right-3 z-[9] rounded-full bg-white p-2 shadow-md cursor-pointer md:hidden"
                         onClick={() => setToggleChecked(!toggleChecked)}
                     >
                         <FontAwesomeIcon icon={faSliders} />
@@ -310,7 +310,12 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties }) => {
                 center={[39.8283, -98.5795]} // Center of the USA
                 zoom={4} // Zoomed out to show the entire USA
                 scrollWheelZoom={true}
-                style={{ height: '100%', width: '100%' }}
+                style={{
+                    width: '100%',
+                    height: '100%', 
+                    position: 'absolute',
+                    zIndex: 8,
+                }}
             >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
