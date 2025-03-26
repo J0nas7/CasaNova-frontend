@@ -90,6 +90,7 @@ export const useTypeAPI = <T extends { [key: string]: any }, IDKey extends keyof
         try {
             const response: APIResponse<T> = await httpPutWithData(`${resource}/${updatedItem[idFieldName]}`, updatedItem);
 
+            console.log("updateItem", response)
             if (!response.message) return true;
 
             console.log(`${resource} updateItem failed`, response)

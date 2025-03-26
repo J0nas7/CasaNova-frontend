@@ -11,6 +11,7 @@ import { selectAuthUser, useTypedSelector } from "@/redux";
 import { usePropertiesContext } from "@/contexts";
 import { Property, propertyTypeMap } from "@/types";
 import { PropertyImageCard } from "../property/image/PropertyImage";
+import { JumbotronImageRotation } from "../property/PropertyDetails";
 
 export const Startpage = () => {
     const authUser = useTypedSelector(selectAuthUser)
@@ -66,34 +67,47 @@ export const LatestAds: React.FC<StartpageProps> = ({ properties }) => {
             <Text className="text-2xl font-bold">🆕 Latest Listings</Text>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
                 {latestProperties?.map((property: Property) => (
-                    <Link
+                    <div
                         key={property.Property_ID}
-                        href={`/listing/${property.Property_ID}`}
                         className="bg-white p-4 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition group"
                     >
                         <div className="relative w-full h-48 rounded-md overflow-hidden">
-                            <PropertyImageCard
+                            <JumbotronImageRotation
+                                property={property}
+                                enableAutoRotation={false}
+                                numberInRotation={1}
+                                image={property.images?.[0] || undefined}
+                                setShowJumbotronHighlightImage={() => null}
+                                classNames={{
+                                    rotationWrapper: "w-full h-full p-1 flex items-center justify-center",
+                                    rotationImageWrapper: "relative w-full h-auto",
+                                    rotationImage: "w-full h-auto max-h-48 object-cover group-hover:opacity-80 transition",
+                                }}
+                            />
+                            {/* <PropertyImageCard
                                 property={property}
                                 className="w-full h-48 object-cover group-hover:opacity-80 transition"
-                            />
+                            /> */}
                         </div>
 
-                        <div className="mt-3">
-                            <Text className="text-lg font-semibold">{property.Property_Title}</Text>
-                            <Text className="text-gray-600">
-                                {property.Property_City}
-                            </Text>
-                            <Text className="text-lg font-bold text-green-600">
-                                ${property.Property_Price_Per_Month} / month
-                            </Text>
-                        </div>
+                        <Link href={`/listing/${property.Property_ID}`}>
+                            <div className="mt-3">
+                                <Text className="text-lg font-semibold">{property.Property_Title}</Text>
+                                <Text className="text-gray-600">
+                                    {property.Property_City}
+                                </Text>
+                                <Text className="text-lg font-bold text-green-600">
+                                    ${property.Property_Price_Per_Month} / month
+                                </Text>
+                            </div>
 
-                        <div className="flex justify-between items-center mt-3 text-gray-600 text-sm">
-                            <span>{property.Property_Num_Bedrooms} Beds</span>
-                            <span>{property.Property_Num_Bathrooms} Baths</span>
-                            <span>{propertyTypeMap[property.Property_Property_Type]}</span>
-                        </div>
-                    </Link>
+                            <div className="flex justify-between items-center mt-3 text-gray-600 text-sm">
+                                <span>{property.Property_Num_Bedrooms} Beds</span>
+                                <span>{property.Property_Num_Bathrooms} Baths</span>
+                                <span>{propertyTypeMap[property.Property_Property_Type]}</span>
+                            </div>
+                        </Link>
+                    </div>
                 ))}
             </div>
         </Block>
@@ -214,34 +228,47 @@ export const PopularAds: React.FC<StartpageProps> = ({ properties }) => {
             <Text className="text-2xl font-bold">🔥 Most Popular Ads</Text>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
                 {popularProperties?.map((property: Property) => (
-                    <Link
+                    <div
                         key={property.Property_ID}
-                        href={`/listing/${property.Property_ID}`}
                         className="bg-white p-4 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition group"
                     >
                         <div className="relative w-full h-48 rounded-md overflow-hidden">
-                            <PropertyImageCard
+                            <JumbotronImageRotation
+                                property={property}
+                                enableAutoRotation={false}
+                                numberInRotation={1}
+                                image={property.images?.[0] || undefined}
+                                setShowJumbotronHighlightImage={() => null}
+                                classNames={{
+                                    rotationWrapper: "w-full h-full p-1 flex items-center justify-center",
+                                    rotationImageWrapper: "relative w-full h-auto",
+                                    rotationImage: "w-full h-auto max-h-48 object-cover group-hover:opacity-80 transition",
+                                }}
+                            />
+                            {/* <PropertyImageCard
                                 property={property}
                                 className="w-full h-48 object-cover group-hover:opacity-80 transition"
-                            />
+                            /> */}
                         </div>
 
-                        <div className="mt-3">
-                            <Text className="text-lg font-semibold">{property.Property_Title}</Text>
-                            <Text className="text-gray-600">
-                                {property.Property_City}
-                            </Text>
-                            <Text className="text-lg font-bold text-green-600">
-                                ${property.Property_Price_Per_Month} / month
-                            </Text>
-                        </div>
+                        <Link href={`/listing/${property.Property_ID}`}>
+                            <div className="mt-3">
+                                <Text className="text-lg font-semibold">{property.Property_Title}</Text>
+                                <Text className="text-gray-600">
+                                    {property.Property_City}
+                                </Text>
+                                <Text className="text-lg font-bold text-green-600">
+                                    ${property.Property_Price_Per_Month} / month
+                                </Text>
+                            </div>
 
-                        <div className="flex justify-between items-center mt-3 text-gray-600 text-sm">
-                            <span>{property.Property_Num_Bedrooms} Beds</span>
-                            <span>{property.Property_Num_Bathrooms} Baths</span>
-                            <span>{propertyTypeMap[property.Property_Property_Type]}</span>
-                        </div>
-                    </Link>
+                            <div className="flex justify-between items-center mt-3 text-gray-600 text-sm">
+                                <span>{property.Property_Num_Bedrooms} Beds</span>
+                                <span>{property.Property_Num_Bathrooms} Baths</span>
+                                <span>{propertyTypeMap[property.Property_Property_Type]}</span>
+                            </div>
+                        </Link>
+                    </div>
                 ))}
             </div>
         </Block>

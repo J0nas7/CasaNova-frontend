@@ -30,6 +30,7 @@ export const useResourceContext = <T extends { [key: string]: any }, IDKey exten
         if (refresh) setItemsById([])
 
         const data = await fetchItemsByParent(parentId) // Fetch all items by parentId
+        console.log("readItemsById", data)
         if (data) setItemsById(data)
     }
 

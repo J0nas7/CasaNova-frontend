@@ -38,11 +38,45 @@
     font-weight: bold;
 }
 
+.mobileMenuTrigger {
+    @apply cursor-pointer;
+    
+    @media (min-width: 500px) {
+        @apply hidden;
+    }
+}
+
 .navList {
     @apply flex flex-col gap-4;
 
     @media (min-width: 334px) {
         @apply flex-row;
+    }
+
+    &.authUser {
+        @apply flex flex-col items-center gap-10;
+        @apply fixed left-full;
+        @apply bg-gray-500 bg-opacity-90;
+        @apply w-full h-screen p-6;
+        transition: left 0.2s ease;
+        
+        @media (min-width: 500px) {
+            @apply flex flex-row gap-4;
+            @apply static;
+            @apply bg-transparent;
+            @apply h-auto;
+            @apply p-0;
+        }
+
+        &.showMobileMenu {
+            @apply left-0;
+        }
+
+        .closeMobile {
+            @apply absolute top-2 left-auto right-2;
+            @apply text-white;
+            @apply cursor-pointer;
+        }
     }
 }
 

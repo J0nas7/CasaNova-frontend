@@ -4,7 +4,7 @@ import React, { FormEvent, useEffect, useState } from "react"
 import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDoorOpen, faEnvelope, faHouseChimney, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faDoorOpen, faEnvelope, faHouseChimney, faPlus, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "next-i18next"
 import { useRouter } from "next/navigation"
 
@@ -25,6 +25,7 @@ export const Header: React.FC = () => {
 
     // Internal variables
     const [showLoginForm, setShowLoginForm] = useState<boolean>(false)
+    const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false)
 
     return (
         <header className={styles.header}>
@@ -48,9 +49,17 @@ export const Header: React.FC = () => {
                 <SearchBar />
 
                 <nav>
-                    <ul className={styles.navList}>
-                        {authUser && (
-                            <>
+                    {authUser && (
+                        <>
+                            <FontAwesomeIcon className={styles.mobileMenuTrigger} icon={faBars} onClick={() => setShowMobileMenu(true)} />
+                            <ul className={clsx(
+                                styles.navList, 
+                                styles.authUser,
+                                { [styles.showMobileMenu]: showMobileMenu }
+                            )}>
+                                <li className={styles.closeMobile}>
+                                    <FontAwesomeIcon className={styles.mobileMenuTrigger} icon={faXmark} onClick={() => setShowMobileMenu(false)} />
+                                </li>
                                 <li>
                                     <Block variant="span" className="flex items-center space-x-3">
                                         {authUser.User_Profile_Picture ? (
@@ -76,6 +85,19 @@ export const Header: React.FC = () => {
                                     <Block variant="span" className="flex items-center space-x-3">
                                         <FontAwesomeIcon icon={faHouseChimney} />
                                         <Link
+                                            href="/my-listings"
+                                            className={clsx(
+                                                `inline-block text-sm`
+                                            )}
+                                        >
+                                            <Text variant="span" className="text-sm text-white">My Listings</Text>
+                                        </Link>
+                                    </Block>
+                                </li>
+                                <li>
+                                    <Block variant="span" className="flex items-center space-x-3">
+                                        <FontAwesomeIcon icon={faPlus} />
+                                        <Link
                                             href="/new-listing"
                                             className={clsx(
                                                 `inline-block text-sm`
@@ -98,28 +120,29 @@ export const Header: React.FC = () => {
                                         </Link>
                                     </Block>
                                 </li>
-                            </>
-                        )}
-                        {authUser ? (
-                            <li>
-                                <Block variant="span" className="flex items-center gap-2">
-                                    <FontAwesomeIcon icon={faDoorOpen} />
-                                    <Block
-                                        variant="span"
-                                        className={clsx(
-                                            `inline-block text-sm text-white cursor-pointer`
-                                        )}
-                                        onClick={handleLogoutSubmit}
-                                    >
-                                        Log out
+                                <li>
+                                    <Block variant="span" className="flex items-center gap-2">
+                                        <FontAwesomeIcon icon={faDoorOpen} />
+                                        <Block
+                                            variant="span"
+                                            className={clsx(
+                                                `inline-block text-sm text-white cursor-pointer`
+                                            )}
+                                            onClick={handleLogoutSubmit}
+                                        >
+                                            Log out
+                                        </Block>
                                     </Block>
-                                </Block>
-                            </li>
-                        ) : (
+                                </li>
+                            </ul>
+                        </>
+                    )}
+                    {!authUser && (
+                        <ul className={styles.navList}>
                             <li>
                                 <Block className="relative">
-                                    <Block 
-                                        variant="span" 
+                                    <Block
+                                        variant="span"
                                         className="flex items-center gap-2"
                                         onClick={() => setShowLoginForm(!showLoginForm)}
                                     >
@@ -135,8 +158,8 @@ export const Header: React.FC = () => {
                                     )}
                                 </Block>
                             </li>
-                        )}
-                    </ul>
+                        </ul>
+                    )}
                 </nav>
             </div>
         </header>

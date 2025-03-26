@@ -1,0 +1,105 @@
+"use client";
+
+// External Imports
+import React, { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouseChimney, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+
+// Internal Imports
+import { usePropertiesContext } from "@/contexts";
+import { Property } from "@/types";
+import { selectAuthUser, useTypedSelector } from "@/redux";
+import { SignInView } from "@/app/sign-in/page";
+import { PropertyCard } from "./SearchProperties";
+import { FlexibleBox } from "@/components/ui/flexible-box";
+import { Block } from "@/components/ui/block-text";
+import Link from "next/link";
+
+const UserProperties: React.FC = () => {
+    // Hooks
+    const router = useRouter();
+    const { propertiesById, readPropertiesByUserId, removeProperty } = usePropertiesContext();
+
+    // Redux (Authenticated User)
+    const authUser = useTypedSelector(selectAuthUser);
+
+    // Local State
+    const [renderProperties, setRenderProperties] = useState<Property[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    // Fetch properties when component mounts
+    useEffect(() => {
+        const fetchProperties = async () => {
+            if (authUser?.User_ID) {
+                await readPropertiesByUserId(authUser.User_ID);
+                setLoading(false);
+            }
+        }
+        fetchProperties();
+    }, [authUser]);
+    useEffect(() => { setRenderProperties(Array.isArray(propertiesById) ? propertiesById : Object.values(propertiesById)); }, [propertiesById]);
+
+    // Handle deletion of property
+    const handleDelete = async (property: Property) => {
+        if (!authUser?.User_ID || !property.Property_ID) return
+
+        await removeProperty(property.Property_ID, authUser.User_ID)
+        await readPropertiesByUserId(authUser.User_ID)
+    };
+
+    if (!authUser?.User_ID) return <SignInView />
+
+    return (
+        <div className="container mx-auto py-8">
+            <FlexibleBox
+                title={`My Listings`}
+                icon={faHouseChimney}
+                className="no-box w-auto mt-4"
+            >
+                {/* Loading State */}
+                {loading && (
+                    <div className="flex flex-col gap-4 justify-center items-center">
+                        <img
+                            src="/red-spinner.gif"
+                            alt="Loading..."
+                            className="w-10 h-10"
+                        />
+                        <p className="text-gray-500 text-center">Loading properties...</p>
+                    </div>
+                )}
+
+                {/* No Properties Message */}
+                {!loading && renderProperties.length === 0 && (
+                    <p className="text-gray-500 text-center mt-10">You have no properties listed.</p>
+                )}
+
+                {/* Properties Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {renderProperties.map((property) => (
+                        <Block className="flex gap-4 flex-col bg-white p-4 rounded-lg shadow-md">
+                            <PropertyCard key={property.Property_ID} property={property} />
+                            <Block className="flex justify-between">
+                                <Link
+                                    href={`/edit-listing/${property.Property_ID}`}
+                                    className="flex items-center gap-2 text-gray-500 hover:text-gray-700"
+                                >
+                                    <FontAwesomeIcon icon={faPencil} />
+                                    Edit
+                                </Link>
+                                <button
+                                    className="flex items-center gap-2 text-gray-500 hover:text-gray-700"
+                                >
+                                    <FontAwesomeIcon icon={faTrashCan} />
+                                    Delete
+                                </button>
+                            </Block>
+                        </Block>
+                    ))}
+                </div>
+            </FlexibleBox>
+        </div>
+    );
+};
+
+export default UserProperties;

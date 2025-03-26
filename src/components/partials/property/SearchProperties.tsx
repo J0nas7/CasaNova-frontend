@@ -15,6 +15,7 @@ import { Property, propertyTypeMap } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faMap, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { PropertyImageCard } from "./image/PropertyImage";
+import { JumbotronImageRotation } from "./PropertyDetails";
 
 // Filters interface
 interface Filters {
@@ -231,28 +232,39 @@ interface PropertyCardProps {
     property: Property;
 }
 
-const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
     return (
-        <Link
-            href={`/listing/${property.Property_ID}`}
-            className="bg-white p-4 rounded-lg shadow-md transition hover:shadow-lg"
-        >
-            <div className="relative w-full h-48 rounded-md overflow-hidden">
-                <PropertyImageCard property={property} className="w-full h-full object-cover" />
+        <div className="bg-white p-4 rounded-lg shadow-md transition hover:shadow-lg group">
+            <div className="relative w-full h-48 rounded-md overflow-hidden flex items-center justify-center">
+                <JumbotronImageRotation
+                    property={property}
+                    enableAutoRotation={false}
+                    numberInRotation={1}
+                    image={property.images?.[0] || undefined}
+                    setShowJumbotronHighlightImage={() => null}
+                    classNames={{
+                        rotationWrapper: "w-full h-full max-h-48 p-1 flex items-center justify-center",
+                        rotationImageWrapper: "relative w-full h-auto max-h-48 flex items-center",
+                        rotationImage: "w-full h-full object-cover group-hover:opacity-80 transition",
+                    }}
+                />
+                {/* <PropertyImageCard property={property} className="w-full h-full object-cover" /> */}
             </div>
 
-            <div className="mt-3">
-                <Text className="text-lg font-semibold">{property.Property_Title}</Text>
-                <Text className="text-gray-600">{property.Property_City}</Text>
-                <Text className="text-lg font-bold text-green-600">${property.Property_Price_Per_Month} / month</Text>
-            </div>
+            <Link href={`/listing/${property.Property_ID}`}>
+                <div className="mt-3">
+                    <Text className="text-lg font-semibold">{property.Property_Title}</Text>
+                    <Text className="text-gray-600">{property.Property_City}</Text>
+                    <Text className="text-lg font-bold text-green-600">${property.Property_Price_Per_Month} / month</Text>
+                </div>
 
-            <div className="flex justify-between items-center mt-3 text-gray-600 text-sm">
-                <span>{property.Property_Num_Bedrooms} Beds</span>
-                <span>{property.Property_Num_Bathrooms} Baths</span>
-                <span>{propertyTypeMap[property.Property_Property_Type]}</span>
-            </div>
-        </Link>
+                <div className="flex justify-between items-center mt-3 text-gray-600 text-sm">
+                    <span>{property.Property_Num_Bedrooms} Beds</span>
+                    <span>{property.Property_Num_Bathrooms} Baths</span>
+                    <span>{propertyTypeMap[property.Property_Property_Type]}</span>
+                </div>
+            </Link>
+        </div>
     );
 }
 
@@ -311,42 +323,56 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties }) => {
                         icon={markerIcon}
                     >
                         <Popup>
-                            <Link href={`/listing/${property.Property_ID}`} className="block w-[280px] h-[110px]">
+                            <div className="block w-[280px] h-[110px]">
                                 <div className="flex gap-2">
                                     {/* Property Image with Fixed Width */}
-                                    <PropertyImageCard property={property} className="w-1/3 h-[110px] object-cover rounded-lg" />
-
-                                    <div className="flex-1 flex flex-col justify-between">
-                                        {/* Property Postal Code and City */}
-                                        <div className="text-sm text-gray-600">
-                                            <span className="font-semibold">{property.Property_City}</span>
-                                            <span className="ml-2 text-gray-500">{property.Property_Zip_Code}</span>
-                                        </div>
-
-                                        {/* Property Title */}
-                                        <div className="mt-1 text-sm text-gray-800">
-                                            {property.Property_Title}
-                                        </div>
-
-                                        <div className="mt-1 flex justify-between items-center">
-                                            {/* Property Size and Rooms */}
-                                            <div className="flex space-x-2">
-                                                <div className="text-sm text-gray-500">
-                                                    {property.Property_Square_Feet}<small> m²</small>
-                                                </div>
-                                                <div className="text-sm text-gray-500">
-                                                    {property.Property_Num_Bedrooms}<small> vær.</small>
-                                                </div>
+                                    <JumbotronImageRotation
+                                        property={property}
+                                        enableAutoRotation={false}
+                                        numberInRotation={1}
+                                        image={property.images?.[0] || undefined}
+                                        setShowJumbotronHighlightImage={() => null}
+                                        classNames={{
+                                            rotationWrapper: "w-full h-full p-1 flex items-center justify-center",
+                                            rotationImageWrapper: "relative w-full h-auto",
+                                            rotationImage: "w-full h-[110px] object-cover rounded-lg",
+                                        }}
+                                    />
+                                    {/* <PropertyImageCard property={property} className="w-1/3 h-[110px] object-cover rounded-lg" /> */}
+                                    
+                                    <Link href={`/listing/${property.Property_ID}`}>
+                                        <div className="flex-1 flex flex-col justify-between">
+                                            {/* Property Postal Code and City */}
+                                            <div className="text-sm text-gray-600">
+                                                <span className="font-semibold">{property.Property_City}</span>
+                                                <span className="ml-2 text-gray-500">{property.Property_Zip_Code}</span>
                                             </div>
 
-                                            {/* Property Price */}
-                                            <div className="text-lg font-bold text-green-600">
-                                                {property.Property_Price_Per_Month.toLocaleString()} kr.
+                                            {/* Property Title */}
+                                            <div className="mt-1 text-sm text-gray-800">
+                                                {property.Property_Title}
+                                            </div>
+
+                                            <div className="mt-1 flex justify-between items-center">
+                                                {/* Property Size and Rooms */}
+                                                <div className="flex space-x-2">
+                                                    <div className="text-sm text-gray-500">
+                                                        {property.Property_Square_Feet}<small> m²</small>
+                                                    </div>
+                                                    <div className="text-sm text-gray-500">
+                                                        {property.Property_Num_Bedrooms}<small> vær.</small>
+                                                    </div>
+                                                </div>
+
+                                                {/* Property Price */}
+                                                <div className="text-lg font-bold text-green-600">
+                                                    {property.Property_Price_Per_Month.toLocaleString()} kr.
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </div>
-                            </Link>
+                            </div>
                         </Popup>
                     </Marker>
                 ))}

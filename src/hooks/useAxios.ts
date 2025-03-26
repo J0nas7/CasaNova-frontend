@@ -63,14 +63,13 @@ export const useAxios = () => {
                 } else {
                     let value = postContent[key];
 
-                    // Convert "true" and "false" strings to actual booleans
+                    // Convert "true", "false" and "null" strings to actual types
                     if (value === "true") value = true;
                     if (value === "false") value = false;
+                    if (value === "null") value = null;
 
-                    // Convert booleans to JSON string, so the backend can properly interpret them
-                    if (typeof value === "boolean") {
-                        value = JSON.stringify(value);
-                    }
+                    // Convert actual types to JSON string, so the backend can properly interpret them
+                    if (typeof value === "boolean" || value === null || Array.isArray(value)) value = JSON.stringify(value)
 
                     formData.append(key, value);
                 }

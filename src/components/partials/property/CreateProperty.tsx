@@ -4,21 +4,22 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { faBuilding, faCamera, faFaucetDrip, faPlus } from "@fortawesome/free-solid-svg-icons";
+
+// Dynamically import ReactQuill with SSR disabled
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css"; // Import the Quill styles
 
 // Internal
 import { usePropertiesContext } from "@/contexts";
 import { Property, PropertyFields, propertyTypeMap } from "@/types";
 import { Block, Text } from "@/components/ui/block-text";
 import { FlexibleBox } from "@/components/ui/flexible-box";
-import { faBuilding } from "@fortawesome/free-solid-svg-icons";
-
-// Dynamically import ReactQuill with SSR disabled
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import "react-quill/dist/quill.snow.css"; // Import the Quill styles
 import { Heading } from "@/components/ui/heading";
 import { Field } from "@/components/ui/input-field";
 import { selectAuthUser, useTypedSelector } from "@/redux";
 import { SignInView } from "@/app/sign-in/page";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const CreateProperty: React.FC = () => {
     // Hooks
@@ -120,7 +121,7 @@ const CreateProperty: React.FC = () => {
             alert("An error happened, assigning the property to you. Please try again.");
             return;
         }
-        
+
         const property = await createPropertyWithImages(newProperty, uploadedFiles)
         if (property) {
             router.push(`/listing/${property.Property_ID}`)
@@ -476,26 +477,26 @@ export const PropertyDetailsForm: React.FC<
                 </div>
             </div>
             <div className="mt-4 flex flex-col sm:flex-row justify-between gap-4">
-                <div className="flex gap-4">
-                    <button
-                        onClick={doTogglePropertyImages}
-                        className="button-blue"
-                    >
-                        Add Listing Images
-                    </button>
-                    <button
-                        onClick={doTogglePropertyAmendities}
-                        className="button-blue"
-                    >
-                        Add Listing Amenities
-                    </button>
-                </div>
-
+                <button
+                    onClick={doTogglePropertyImages}
+                    className="button-blue !flex gap-2 justify-center items-center"
+                >
+                    <FontAwesomeIcon icon={faCamera} />
+                    <span>Add Listing Images</span>
+                </button>
+                <button
+                    onClick={doTogglePropertyAmendities}
+                    className="button-blue !flex gap-2 justify-center items-center"
+                >
+                    <FontAwesomeIcon icon={faFaucetDrip} />
+                    <span>Add Listing Amenities</span>
+                </button>
                 <button
                     onClick={handleCreateProperty}
-                    className="button-blue"
+                    className="button-blue !flex gap-2 justify-center items-center"
                 >
-                    Create Listing
+                    <FontAwesomeIcon icon={faPlus} />
+                    <span>Create Listing</span>
                 </button>
             </div>
         </div>

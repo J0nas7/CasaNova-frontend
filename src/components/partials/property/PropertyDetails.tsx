@@ -23,7 +23,6 @@ import { PropertyImageCard } from './image/PropertyImage';
 import clsx from 'clsx';
 
 const PropertyDetails: React.FC = () => {
-    const router = useRouter()
     const { propertyId } = useParams<{ propertyId: string }>(); // Get propertyId from URL
     const { propertyById, readPropertyById } = usePropertiesContext()
     const authUser = useTypedSelector(selectAuthUser) // Redux
@@ -371,7 +370,10 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
             {imageCount > numberInRotation && (
                 <button
                     onClick={handlePrev}
-                    className="absolute w-10 h-10 left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+                    className={clsx(
+                        "absolute w-10 h-10 left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full",
+                        { ["hidden md:block"]: numberInRotation > 1 }
+                    )}
                 >
                     <FontAwesomeIcon icon={faArrowLeft} />
                 </button>
@@ -381,7 +383,10 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
             {imageCount > numberInRotation && (
                 <button
                     onClick={handleNext}
-                    className="absolute w-10 h-10 left-auto right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+                    className={clsx(
+                        "absolute w-10 h-10 left-auto right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full",
+                        { ["hidden md:block"]: numberInRotation > 1 }
+                    )}
                 >
                     <FontAwesomeIcon icon={faArrowRight} />
                 </button>
