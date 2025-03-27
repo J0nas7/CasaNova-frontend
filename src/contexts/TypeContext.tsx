@@ -15,7 +15,7 @@ export const useResourceContext = <T extends { [key: string]: any }, IDKey exten
     
     const [items, setItems] = useState<T[]>([])
     const [itemsById, setItemsById] = useState<T[]>([])
-    const [itemById, setItemById] = useState<T|undefined>(undefined)
+    const [itemById, setItemById] = useState<T|undefined|false>(undefined)
     const [newItem, setNewItem] = useState<T | undefined>(undefined)
     const [itemDetail, setItemDetail] = useState<T | undefined>(undefined)
     
@@ -36,7 +36,8 @@ export const useResourceContext = <T extends { [key: string]: any }, IDKey exten
 
     const readItemById = async (itemId: number) => {
         const data = await fetchItem(itemId) // Fetch item by id
-        if (data) setItemById(data)
+        
+        setItemById(data ? data : false)
     }
 
     const addItem = async (parentId: number, object?: T) => {

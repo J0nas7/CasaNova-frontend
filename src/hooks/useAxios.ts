@@ -69,7 +69,11 @@ export const useAxios = () => {
                     if (value === "null") value = null;
 
                     // Convert actual types to JSON string, so the backend can properly interpret them
-                    if (typeof value === "boolean" || value === null || Array.isArray(value)) value = JSON.stringify(value)
+                    if (
+                        typeof value === "boolean" 
+                        || value === null 
+                        // || Array.isArray(value)
+                    ) value = JSON.stringify(value)
 
                     formData.append(key, value);
                 }

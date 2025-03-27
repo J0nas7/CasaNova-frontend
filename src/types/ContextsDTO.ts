@@ -61,6 +61,8 @@ export type PropertyFields =
     "Property_Amenities" | "Property_Property_Type" | "Property_Available_From" |
     "Property_Is_Active" | "Property_CreatedAt" | "Property_UpdatedAt";
 
+export type PropertyStates = Property|undefined|false
+
 // Property type mapping (number -> string)
 export const propertyTypeMap: { [key: number]: string } = {
     1: "Apartment",
@@ -77,14 +79,15 @@ export type PropertyImage = {
     Image_Path?: string; // Storage path
     Image_Type?: string; // File type (image, video, etc.)
     Image_URL?: string; // Image URL
-    Image_Is_Featured: boolean; // Mark the featured image
+    Image_Order: number; // Order of the image
 
     // Relationships
     property?: Property;
 };
 
 export type PropertyImageFields =
-    "Image_ID" | "Property_ID" | "Image_URL" | "Image_Is_Featured";
+    "Image_ID" | "Property_ID" | "Image_Name" | "Image_Path" | "Image_Type" |
+    "Image_URL" | "Image_Order";
 
 // Message Type
 export type Message = {

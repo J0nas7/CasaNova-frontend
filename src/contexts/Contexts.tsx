@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState } from "react"
 
 // Internal
 import { useResourceContext } from "@/contexts/TypeContext"
-import { User, Property, PropertyImage, Message, Favorite, UserFields, PropertyFields, MessageFields } from "@/types"
+import { User, Property, PropertyImage, Message, Favorite, UserFields, PropertyFields, MessageFields, PropertyStates } from "@/types"
 import { useAxios } from "@/hooks";
 import { selectAuthUser, useAppDispatch, useAuthActions, useTypedSelector } from "@/redux";
 
@@ -73,7 +73,7 @@ export const useUsersContext = () => {
 export type PropertiesContextType = {
     properties: Property[];
     propertiesById: Property[];
-    propertyById: Property | undefined
+    propertyById: PropertyStates
     propertyDetail: Property | undefined;
     newProperty: Property | undefined;
     readProperties: (refresh?: boolean) => Promise<void>
@@ -127,8 +127,9 @@ export const PropertiesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
 
     const updatePropertyWithImages = async (property: Property, images: (string | File)[]) => {
-        console.log("updatePropertyWithImages before API", property, images)
+        console.log(images.length, "updatePropertyWithImages before API", property, images)
         const result = await httpPostWithData(`updatePropertyWithImages/${property.Property_ID}`, { ...property, images })
+        console.log("updatePropertyWithImages after API", result)
         
         if (result.property) {
             return result.property
@@ -174,7 +175,7 @@ export const usePropertiesContext = () => {
 export type MessagesContextType = {
     messages: Message[];
     messagesById: Message[];
-    messageById: Message | undefined
+    messageById: Message | undefined | false
     messageDetail: Message | undefined;
     newMessage: Message | undefined;
     readMessages: (refresh?: boolean) => Promise<void>

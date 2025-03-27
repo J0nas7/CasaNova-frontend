@@ -14,7 +14,7 @@ import "react-quill/dist/quill.snow.css"; // Import the Quill styles
 
 // Internal
 import { usePropertiesContext } from "@/contexts";
-import { Property, PropertyFields, propertyTypeMap } from "@/types";
+import { Property, PropertyFields, PropertyStates, propertyTypeMap } from "@/types";
 import { Block, Text } from "@/components/ui/block-text";
 import { FlexibleBox } from "@/components/ui/flexible-box";
 import { Heading } from "@/components/ui/heading";
@@ -23,6 +23,7 @@ import { selectAuthUser, useTypedSelector } from "@/redux";
 import { SignInView } from "@/app/sign-in/page";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
+import Link from "next/link";
 
 const EditProperty: React.FC = () => {
     // Hooks
@@ -34,7 +35,7 @@ const EditProperty: React.FC = () => {
 
     // State
     const [uploadedFiles, setUploadedFiles] = useState<(File | string)[]>([]);
-    const [renderProperty, setRenderProperty] = useState<Property | undefined>(undefined);
+    const [renderProperty, setRenderProperty] = useState<PropertyStates>(undefined);
     const [togglePropertyImages, setTogglePropertyImages] = useState<boolean>(false);
     const [togglePropertyAmendities, setTogglePropertyAmendities] = useState<boolean>(false);
 
@@ -128,7 +129,7 @@ const EditProperty: React.FC = () => {
         setRenderProperty(propertyById)
 
         const fetchExistingImages = async () => {
-            if (propertyById?.images) {
+            if (propertyById && propertyById.images) {
                 const files = await Promise.all(
                     propertyById.images.map(async (image) => {
                         return `${image.Image_Path}`
@@ -142,6 +143,15 @@ const EditProperty: React.FC = () => {
     }, [propertyById])
 
     if (!authUser?.User_ID) return <SignInView />;
+
+    if (propertyById === false) {
+        return (
+            <Block className="page-content">
+                <Text>Property not found</Text>
+                <Link href="/my-listings" className="blue-link-light">Go to Your Listings</Link>
+            </Block>
+        )
+    }
 
     return (
         <Block className="page-content">

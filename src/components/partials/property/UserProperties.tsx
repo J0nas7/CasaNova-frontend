@@ -13,7 +13,7 @@ import { selectAuthUser, useTypedSelector } from "@/redux";
 import { SignInView } from "@/app/sign-in/page";
 import { PropertyCard } from "./SearchProperties";
 import { FlexibleBox } from "@/components/ui/flexible-box";
-import { Block } from "@/components/ui/block-text";
+import { Block, Text } from "@/components/ui/block-text";
 import Link from "next/link";
 
 const UserProperties: React.FC = () => {
@@ -25,7 +25,7 @@ const UserProperties: React.FC = () => {
     const authUser = useTypedSelector(selectAuthUser);
 
     // Local State
-    const [renderProperties, setRenderProperties] = useState<Property[]>([]);
+    const [renderProperties, setRenderProperties] = useState<Property[] | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(true);
 
     // Fetch properties when component mounts
@@ -38,7 +38,11 @@ const UserProperties: React.FC = () => {
         }
         fetchProperties();
     }, [authUser]);
-    useEffect(() => { setRenderProperties(Array.isArray(propertiesById) ? propertiesById : Object.values(propertiesById)); }, [propertiesById]);
+    useEffect(() => {
+        if (Array.isArray(propertiesById)) {
+            setRenderProperties(propertiesById)
+        }
+    }, [propertiesById]);
 
     // Handle deletion of property
     const handleDelete = async (property: Property) => {
@@ -50,33 +54,38 @@ const UserProperties: React.FC = () => {
 
     if (!authUser?.User_ID) return <SignInView />
 
+    if (loading) {
+        return (
+            <div className="flex flex-col gap-4 justify-center items-center">
+                <img
+                    src="/red-spinner.gif"
+                    alt="Loading..."
+                    className="w-10 h-10"
+                />
+                <p className="text-gray-500 text-center">Loading properties...</p>
+            </div>
+        )
+    }
+    
+    if (!renderProperties || renderProperties.length === 0) {
+        return (
+            <Block className="page-content">
+                <Text>You have no properties listed. Would you like to add one?</Text>
+                <Link href="/search" className="blue-link-light">Go to Search</Link>
+            </Block>
+        )
+    }
+
     return (
         <div className="container mx-auto py-8">
             <FlexibleBox
-                title={`My Listings`}
+                title={`My Listings (${renderProperties?.length || 0})`}
                 icon={faHouseChimney}
                 className="no-box w-auto mt-4"
             >
-                {/* Loading State */}
-                {loading && (
-                    <div className="flex flex-col gap-4 justify-center items-center">
-                        <img
-                            src="/red-spinner.gif"
-                            alt="Loading..."
-                            className="w-10 h-10"
-                        />
-                        <p className="text-gray-500 text-center">Loading properties...</p>
-                    </div>
-                )}
-
-                {/* No Properties Message */}
-                {!loading && renderProperties.length === 0 && (
-                    <p className="text-gray-500 text-center mt-10">You have no properties listed.</p>
-                )}
-
                 {/* Properties Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {renderProperties.map((property) => (
+                    {renderProperties.length && renderProperties.map((property) => (
                         <Block className="flex gap-4 flex-col bg-white p-4 rounded-lg shadow-md">
                             <PropertyCard key={property.Property_ID} property={property} />
                             <Block className="flex justify-between">

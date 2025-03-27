@@ -14,7 +14,7 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 // Internal
 import { usePropertiesContext } from '@/contexts/'; // Ensure this is correctly set up
-import { Property, PropertyImage, User } from '@/types';
+import { Property, PropertyImage, PropertyStates, User } from '@/types';
 import { Block, Text } from '@/components/ui/block-text';
 import { selectAuthUser, useTypedSelector } from '@/redux';
 import { FlexibleBox } from '@/components/ui/flexible-box';
@@ -27,11 +27,11 @@ const PropertyDetails: React.FC = () => {
     const { propertyById, readPropertyById } = usePropertiesContext()
     const authUser = useTypedSelector(selectAuthUser) // Redux
 
-    const [renderProperty, setRenderProperty] = useState<Property | undefined>(undefined)
+    const [renderProperty, setRenderProperty] = useState<PropertyStates>(undefined)
 
     useEffect(() => { readPropertyById(parseInt(propertyId)); }, [propertyId])
     useEffect(() => {
-        if (propertyId) {
+        if (propertyById) {
             setRenderProperty(propertyById)
             document.title = `Property in ${propertyById?.Property_City} - CasaNova`
         }
