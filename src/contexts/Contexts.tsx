@@ -83,7 +83,7 @@ export type PropertiesContextType = {
     handleChangeNewProperty: (field: PropertyFields, value: string) => Promise<void>
     addProperty: (parentId: number, object?: Property) => Promise<void>
     createPropertyWithImages: (property: Property, images: File[]) => Promise<Property | false>
-    updatePropertyWithImages: (property: Property, images: File[]) => Promise<Property | false>
+    updatePropertyWithImages: (property: Property, images: (string | File)[]) => Promise<Property | false>
     savePropertyChanges: (propertyChanges: Property, parentId: number) => Promise<void>
     removeProperty: (itemId: number, parentId: number) => Promise<boolean>
 };
@@ -126,7 +126,7 @@ export const PropertiesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         }
     }
 
-    const updatePropertyWithImages = async (property: Property, images: File[]) => {
+    const updatePropertyWithImages = async (property: Property, images: (string | File)[]) => {
         console.log("updatePropertyWithImages before API", property, images)
         const result = await httpPostWithData(`updatePropertyWithImages/${property.Property_ID}`, { ...property, images })
         

@@ -2,9 +2,11 @@
 
 // External
 import React, { useEffect, useState } from "react";
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { faBuilding, faCamera, faFaucetDrip, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight, faBuilding, faCamera, faFaucetDrip, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 // Dynamically import ReactQuill with SSR disabled
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -20,6 +22,7 @@ import { Field } from "@/components/ui/input-field";
 import { selectAuthUser, useTypedSelector } from "@/redux";
 import { SignInView } from "@/app/sign-in/page";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import clsx from "clsx";
 
 const EditProperty: React.FC = () => {
     // Hooks
@@ -30,7 +33,7 @@ const EditProperty: React.FC = () => {
     const authUser = useTypedSelector(selectAuthUser);
 
     // State
-    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+    const [uploadedFiles, setUploadedFiles] = useState<(File | string)[]>([]);
     const [renderProperty, setRenderProperty] = useState<Property | undefined>(undefined);
     const [togglePropertyImages, setTogglePropertyImages] = useState<boolean>(false);
     const [togglePropertyAmendities, setTogglePropertyAmendities] = useState<boolean>(false);
@@ -121,7 +124,22 @@ const EditProperty: React.FC = () => {
             fetchProperty();
         }
     }, [authUser, propertyId]);
-    useEffect(() => { setRenderProperty(propertyById); }, [propertyById])
+    useEffect(() => {
+        setRenderProperty(propertyById)
+
+        const fetchExistingImages = async () => {
+            if (propertyById?.images) {
+                const files = await Promise.all(
+                    propertyById.images.map(async (image) => {
+                        return `${image.Image_Path}`
+                    })
+                );
+
+                setUploadedFiles(files);
+            }
+        };
+        fetchExistingImages()
+    }, [propertyById])
 
     if (!authUser?.User_ID) return <SignInView />;
 
@@ -276,8 +294,8 @@ export const PropertyAddressForm: React.FC<PropertyFormProps> = ({ newProperty, 
 };
 
 interface PropertyImagesFormProps {
-    uploadedFiles: File[];
-    setUploadedFiles: React.Dispatch<React.SetStateAction<File[]>>;
+    uploadedFiles: (string | File)[]
+    setUploadedFiles: React.Dispatch<React.SetStateAction<(string | File)[]>>
     doTogglePropertyImages: () => void;
 }
 
@@ -291,61 +309,178 @@ export const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({
         if (files) {
             setUploadedFiles([...uploadedFiles, ...Array.from(files)]);
         }
+        event.target.value = ""; // Reset input field
     };
 
     const handleRemoveFile = (index: number) => {
         setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
     };
 
+    const moveFile = (index: number, direction: "left" | "right") => {
+        const newFiles = [...uploadedFiles];
+        const swapIndex = direction === "left" ? index - 1 : index + 1;
+
+        // Swap elements
+        [newFiles[index], newFiles[swapIndex]] = [newFiles[swapIndex], newFiles[index]];
+
+        setUploadedFiles(newFiles);
+    };
+
+    // Drag-and-drop handling
+    const moveDraggedFile = (dragIndex: number, hoverIndex: number) => {
+        // Use the previous state to get the most up-to-date value
+        setUploadedFiles((prevFiles) => {
+            const newFiles = [...prevFiles]; // Create a copy of the previous state
+
+            const draggedFile = newFiles[dragIndex];
+
+            // Remove the dragged file from its current position
+            newFiles.splice(dragIndex, 1);
+
+            // Insert the dragged file at the new position
+            newFiles.splice(hoverIndex, 0, draggedFile);
+
+            return newFiles; // Return the new state
+        });
+    };
+
     return (
-        <div className="bg-white shadow-md rounded-xl p-6">
-            <h2 className="text-xl font-semibold mb-4">Property Images</h2>
+        <DndProvider backend={HTML5Backend}>
+            <div className="bg-white shadow-md rounded-xl p-6">
+                <h2 className="text-xl font-semibold">Property Images</h2>
 
-            <div className="mb-4">
-                <label htmlFor="images" className="block text-sm font-semibold">
-                    Upload Property Images
+                <label className="mt-4 block w-full max-w-[200px]">
+                    <button
+                        type="button"
+                        className="button-blue w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        onClick={() => document.getElementById("file-upload")?.click()}
+                    >
+                        Upload Images
+                    </button>
+                    <input
+                        id="file-upload"
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleFileChange}
+                    />
                 </label>
-                <input
-                    type="file"
-                    id="images"
-                    accept="image/*"
-                    multiple
-                    onChange={handleFileChange}
-                    className="w-full p-2 border rounded-md"
-                />
-            </div>
 
-            {uploadedFiles.length > 0 && (
-                <div className="mb-4">
-                    <h3 className="text-lg font-semibold mb-2">Uploaded Images</h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <Block className="mt-4">
+                    {uploadedFiles.length} images uploaded
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         {uploadedFiles.map((file, index) => (
-                            <div key={index} className="relative">
-                                <img
-                                    src={URL.createObjectURL(file)}
-                                    alt={`Uploaded ${file.name}`}
-                                    className="w-full h-auto rounded-md"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveFile(index)}
-                                    className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full"
-                                >
-                                    X
-                                </button>
-                            </div>
+                            <ImageItem
+                                key={index}
+                                index={index}
+                                file={file}
+                                moveFile={moveFile}
+                                moveDraggedFile={moveDraggedFile}
+                                handleRemoveFile={handleRemoveFile}
+                                uploadedFiles={uploadedFiles}
+                            />
                         ))}
                     </div>
-                </div>
-            )}
+                </Block>
 
-            <div className="mt-4">
-                <span className="text-gray-500 text-sm italic">New images will be rendered after listing is saved.</span>
+                <div className="mt-4">
+                    <button
+                        onClick={doTogglePropertyImages}
+                        className="button-blue"
+                    >
+                        Back to Listing Details
+                    </button>
+                </div>
+            </div>
+        </DndProvider>
+    );
+};
+
+interface ImageItemProps {
+    file: File | string;
+    index: number;
+    moveFile: (index: number, direction: "left" | "right") => void
+    moveDraggedFile: (dragIndex: number, hoverIndex: number) => void
+    handleRemoveFile: (index: number) => void;
+    uploadedFiles: (File | string)[];
+}
+
+// Image Item Component for Drag and Drop
+const ImageItem: React.FC<ImageItemProps> = ({ file, index, moveFile, moveDraggedFile, handleRemoveFile, uploadedFiles }) => {
+    // Drag hook to track the dragged item
+    const [{ isDragging }, drag] = useDrag(() => ({
+        type: 'image',
+        item: { index },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    }));
+
+    // Drop hook to handle when the image is dropped
+    const [{ isOver }, drop] = useDrop(() => ({
+        accept: 'image',
+        drop: (item: { index: number }) => {
+            if (item.index !== index) {
+                moveDraggedFile(item.index, index); // Move file when dropped
+            }
+        },
+        collect: (monitor) => ({
+            isOver: monitor.isOver(),
+        }),
+    }));
+
+    // Combine drag and drop refs
+    const dragDropRef = (node: HTMLDivElement | null) => {
+        drag(node); // Apply drag to this element
+        drop(node); // Apply drop to this element
+    };
+
+    return (
+        <div
+            ref={dragDropRef} // Use the combined ref function
+            className={clsx(
+                "relative flex flex-col items-center",
+                { "opacity-10": isDragging },
+                { "border-2 border-dashed border-blue-600": isOver },
+            )}
+            style={{ aspectRatio: "1 / 1" }}
+        >
+            <img
+                src={typeof file === 'string'
+                    ? `http://localhost:8000/storage/${file}`
+                    : URL.createObjectURL(file)}
+                alt={file instanceof File ? file.name : "Image"}
+                className="w-full h-full object-cover rounded-md hover:cursor-move"
+            />
+
+            {/* Remove button */}
+            <button
+                type="button"
+                onClick={() => handleRemoveFile(index)}
+                className="absolute w-8 h-8 top-2 left-auto right-2 bg-red-500 bg-opacity-50 hover:bg-opacity-100 text-white p-1 rounded-full"
+            >
+                <FontAwesomeIcon icon={faXmark} />
+            </button>
+
+            {/* Arrows for reordering */}
+            <div className="flex justify-between w-full mt-2">
                 <button
-                    onClick={doTogglePropertyImages}
-                    className="button-blue mt-4"
+                    type="button"
+                    onClick={() => moveFile(index, "left")}
+                    className={`text-gray-600 hover:text-black ${index === 0 ? "opacity-30 cursor-not-allowed" : ""}`}
+                    disabled={index === 0}
                 >
-                    Back to Listing Details
+                    <FontAwesomeIcon icon={faArrowLeft} />
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => moveFile(index, "right")}
+                    className={`text-gray-600 hover:text-black ${index === uploadedFiles.length - 1 ? "opacity-30 cursor-not-allowed" : ""}`}
+                    disabled={index === uploadedFiles.length - 1}
+                >
+                    <FontAwesomeIcon icon={faArrowRight} />
                 </button>
             </div>
         </div>

@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { faBuilding, faCamera, faFaucetDrip, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight, faBuilding, faCamera, faFaucetDrip, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 // Dynamically import ReactQuill with SSR disabled
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -293,40 +293,102 @@ interface PropertyImagesFormProps {
     doTogglePropertyImages: () => void
 }
 
-export const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ uploadedFiles, setUploadedFiles, doTogglePropertyImages }) => (
-    <div className="bg-white shadow-md rounded-xl p-6">
-        <Heading variant="h2">Upload Images</Heading>
-        <input
-            type="file"
-            multiple
-            accept="image/*"
-            className="mt-4 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            onChange={(e) => {
-                const files = e.target.files;
-                if (files) {
-                    const fileList = Array.from(files);
-                    setUploadedFiles(fileList);
-                }
-            }}
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-            {uploadedFiles.map((file, index) => (
-                <div key={index} className="text-sm text-gray-700">
-                    {file.name}
-                </div>
-            ))}
+export const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ uploadedFiles, setUploadedFiles, doTogglePropertyImages }) => {
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (files) {
+            setUploadedFiles([...uploadedFiles, ...Array.from(files)]);
+        }
+        event.target.value = ""; // Reset input field
+    };
+
+    const handleRemoveFile = (index: number) => {
+        setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
+    };
+
+    const moveFile = (index: number, direction: "left" | "right") => {
+        const newFiles = [...uploadedFiles];
+        const swapIndex = direction === "left" ? index - 1 : index + 1;
+
+        // Swap elements
+        [newFiles[index], newFiles[swapIndex]] = [newFiles[swapIndex], newFiles[index]];
+
+        setUploadedFiles(newFiles);
+    };
+
+    return (
+        <div className="bg-white shadow-md rounded-xl p-6">
+            <Heading variant="h2">Upload Images</Heading>
+
+            <label className="mt-4 block w-[200px]">
+                <button
+                    type="button"
+                    className="button-blue w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    onClick={() => document.getElementById("file-upload")?.click()}
+                >
+                    Upload Images
+                </button>
+                <input
+                    id="file-upload"
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                />
+            </label>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
+                {uploadedFiles.map((file, index) => (
+                    <div key={index} className="relative flex flex-col items-center" style={{ aspectRatio: "1 / 1" }}>
+                        {/* Image Preview */}
+                        <img
+                            src={URL.createObjectURL(file)}
+                            alt={`Uploaded ${file.name}`}
+                            className="w-full h-full object-cover rounded-md"
+                        />
+
+                        {/* Remove Button */}
+                        <button
+                            type="button"
+                            onClick={() => handleRemoveFile(index)}
+                            className="absolute w-8 h-8 top-2 left-auto right-2 bg-red-500 bg-opacity-50 hover:bg-opacity-100 text-white p-1 rounded-full"
+                        >
+                            <FontAwesomeIcon icon={faXmark} />
+                        </button>
+
+                        {/* Arrows for reordering */}
+                        <div className="flex justify-between w-full mt-2">
+                            <button
+                                type="button"
+                                onClick={() => moveFile(index, "left")}
+                                className={`text-gray-600 hover:text-black ${index === 0 ? "opacity-30 cursor-not-allowed" : ""}`}
+                                disabled={index === 0}
+                            >
+                                <FontAwesomeIcon icon={faArrowLeft} />
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => moveFile(index, "right")}
+                                className={`text-gray-600 hover:text-black ${index === uploadedFiles.length - 1 ? "opacity-30 cursor-not-allowed" : ""}`}
+                                disabled={index === uploadedFiles.length - 1}
+                            >
+                                <FontAwesomeIcon icon={faArrowRight} />
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <div className="mt-4">
+                <button onClick={doTogglePropertyImages} className="button-blue">
+                    Back to Listing Details
+                </button>
+            </div>
         </div>
-        <div className="mt-4">
-            <span className="text-gray-500 text-sm italic">Images will be rendered after listing is created.</span>
-            <button
-                onClick={doTogglePropertyImages}
-                className="button-blue mt-4"
-            >
-                Back to Listing Details
-            </button>
-        </div>
-    </div>
-)
+    );
+};
 
 export const PropertyAmenditiesForm: React.FC<PropertyFormProps & { doTogglePropertyAmendities: () => void }> = (
     { newProperty, handleInputChange, doTogglePropertyAmendities }
