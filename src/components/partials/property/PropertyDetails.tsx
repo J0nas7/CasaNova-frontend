@@ -184,7 +184,7 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
     setShowJumbotronHighlightImage,
     classNames
 }) => {
-    const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const [currentImageOrderNr, setCurrentImageOrderNr] = useState<number>(1);
     const [currentRight, setCurrentRight] = useState<number>(0);
     const [nextRight, setNextRight] = useState<number>(100);
     const [rotationEnabled, setRotationEnabled] = useState<boolean>(enableAutoRotation);
@@ -244,7 +244,7 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
                 interval = setInterval(() => {
                     if (rotationEnabled) {
                         console.log("Rotating to next image", rotationEnabled);
-                        setCurrentIndex((prevIndex) => (prevIndex + 1) % imageCount);
+                        setCurrentImageOrderNr((prevNr) => (prevNr + 1) % imageCount);
                     }
                 }, 3000); // Rotate every 3 seconds after initial delay
             }, 3000); // Delay first rotation by 3 seconds
@@ -267,19 +267,19 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
     const handlePrev = () => {
         setRotationEnabled(false)
         runSliderAnimation(250, true)
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + imageCount) % imageCount);
+        setCurrentImageOrderNr((prevNr) => (prevNr - 1 + imageCount) % imageCount);
     };
 
     const handleNext = () => {
         setRotationEnabled(false)
         runSliderAnimation(250)
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % imageCount);
+        setCurrentImageOrderNr((prevNr) => (prevNr + 1) % imageCount);
     };
 
     useEffect(() => {
         if (image && numberInRotation === 1) {
-            const index = property.images?.findIndex((img) => img.Image_ID === image.Image_ID) || 0;
-            setCurrentIndex(index);
+            const index = image.Image_Order || 0;
+            setCurrentImageOrderNr(index - 1)
         }
     }, [image, numberInRotation])
 
@@ -288,11 +288,12 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
         ? Array.from({ length: Math.min(numberInRotation, imageCount) }).map((_, i) => {
             if (!property.images) return undefined;
 
-            const index = (currentIndex + i) % imageCount;
+            const index = (currentImageOrderNr + i) % imageCount;
             const nextIndex = (index + 1) % imageCount;
+            const sortedImages = [...property.images].sort((a, b) => a.Image_Order - b.Image_Order);
             return {
-                current: property.images[index],
-                next: property.images[nextIndex],
+                current: sortedImages[index],
+                next: sortedImages[nextIndex],
             };
         })
         : [];
@@ -313,7 +314,7 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
                         >
                             <img
                                 src={image?.current?.Image_URL || `http://localhost:8000/storage/${image?.current?.Image_Path}`}
-                                alt={`Property Image ${currentIndex + i + 1}`}
+                                alt={`Property Image ${currentImageOrderNr + i + 1}`}
                                 className={clsx(
                                     classNames.rotationImage,
                                     { ["absolute"]: numberInRotation > 1 }
@@ -322,7 +323,7 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
                             />
                             <img
                                 src={image?.next?.Image_URL || `http://localhost:8000/storage/${image?.next?.Image_Path}`}
-                                alt={`Property Image ${currentIndex + i + 2}`}
+                                alt={`Property Image ${currentImageOrderNr + i + 2}`}
                                 className={clsx(
                                     classNames.rotationImage,
                                     { ["absolute left-auto"]: numberInRotation > 1 },
@@ -338,7 +339,7 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
                                     ) }
                                 )}
                             >
-                                {(currentIndex + i) % imageCount + 1} / {imageCount}
+                                {(currentImageOrderNr + i) % imageCount + 1} / {imageCount}
                             </span>
                             <span
                                 className={clsx(
@@ -349,7 +350,7 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
                                     right: (numberInRotation > 1 ? `-${nextRight}%` : "8px"),
                                 }}
                             >
-                                {(currentIndex + i + 1) % imageCount + 1} / {imageCount}
+                                {(currentImageOrderNr + i + 1) % imageCount + 1} / {imageCount}
                             </span>
                         </div>
                     ))

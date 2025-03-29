@@ -72,22 +72,30 @@ export const LatestAds: React.FC<StartpageProps> = ({ properties }) => {
                         className="bg-white p-4 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition group"
                     >
                         <div className="relative w-full h-48 rounded-md overflow-hidden">
-                            <JumbotronImageRotation
-                                property={property}
-                                enableAutoRotation={false}
-                                numberInRotation={1}
-                                image={property.images?.[0] || undefined}
-                                setShowJumbotronHighlightImage={() => null}
-                                classNames={{
-                                    rotationWrapper: "w-full h-full p-1 flex items-center justify-center",
-                                    rotationImageWrapper: "relative w-full h-auto",
-                                    rotationImage: "w-full h-auto max-h-48 object-cover group-hover:opacity-80 transition",
-                                }}
-                            />
-                            {/* <PropertyImageCard
-                                property={property}
-                                className="w-full h-48 object-cover group-hover:opacity-80 transition"
-                            /> */}
+                            {(() => {
+                                const image = property.images?.find(img => img.Image_Order === 1)
+
+                                return (
+                                    <>
+                                        <JumbotronImageRotation
+                                            property={property}
+                                            enableAutoRotation={false}
+                                            numberInRotation={1}
+                                            image={image || undefined}
+                                            setShowJumbotronHighlightImage={() => null}
+                                            classNames={{
+                                                rotationWrapper: "w-full h-full p-1 flex items-center justify-center",
+                                                rotationImageWrapper: "relative w-full h-auto",
+                                                rotationImage: "w-full h-auto max-h-48 object-cover group-hover:opacity-80 transition",
+                                            }}
+                                        />
+                                        {/* <PropertyImageCard
+                                            property={property}
+                                            className="w-full h-48 object-cover group-hover:opacity-80 transition"
+                                        /> */}
+                                    </>
+                                )
+                            })()}
                         </div>
 
                         <Link href={`/listing/${property.Property_ID}`}>
@@ -233,22 +241,30 @@ export const PopularAds: React.FC<StartpageProps> = ({ properties }) => {
                         className="bg-white p-4 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition group"
                     >
                         <div className="relative w-full h-48 rounded-md overflow-hidden">
-                            <JumbotronImageRotation
-                                property={property}
-                                enableAutoRotation={false}
-                                numberInRotation={1}
-                                image={property.images?.[0] || undefined}
-                                setShowJumbotronHighlightImage={() => null}
-                                classNames={{
-                                    rotationWrapper: "w-full h-full p-1 flex items-center justify-center",
-                                    rotationImageWrapper: "relative w-full h-auto",
-                                    rotationImage: "w-full h-auto max-h-48 object-cover group-hover:opacity-80 transition",
-                                }}
-                            />
-                            {/* <PropertyImageCard
-                                property={property}
-                                className="w-full h-48 object-cover group-hover:opacity-80 transition"
-                            /> */}
+                            {(() => {
+                                const image = property.images?.find(img => img.Image_Order === 1)
+
+                                return (
+                                    <>
+                                        <JumbotronImageRotation
+                                            property={property}
+                                            enableAutoRotation={false}
+                                            numberInRotation={1}
+                                            image={property.images?.[0] || undefined}
+                                            setShowJumbotronHighlightImage={() => null}
+                                            classNames={{
+                                                rotationWrapper: "w-full h-full p-1 flex items-center justify-center",
+                                                rotationImageWrapper: "relative w-full h-auto",
+                                                rotationImage: "w-full h-auto max-h-48 object-cover group-hover:opacity-80 transition",
+                                            }}
+                                        />
+                                        {/* <PropertyImageCard
+                                            property={property}
+                                            className="w-full h-48 object-cover group-hover:opacity-80 transition"
+                                        /> */}
+                                    </>
+                                )
+                            })()}
                         </div>
 
                         <Link href={`/listing/${property.Property_ID}`}>

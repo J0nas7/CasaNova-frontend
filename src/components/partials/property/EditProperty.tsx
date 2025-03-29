@@ -131,9 +131,11 @@ const EditProperty: React.FC = () => {
         const fetchExistingImages = async () => {
             if (propertyById && propertyById.images) {
                 const files = await Promise.all(
-                    propertyById.images.map(async (image) => {
-                        return `${image.Image_Path}`
-                    })
+                    propertyById.images
+                        .sort((a, b) => a.Image_Order - b.Image_Order)
+                        .map(async (image) => {
+                            return `${image.Image_Path}`;
+                        })
                 );
 
                 setUploadedFiles(files);

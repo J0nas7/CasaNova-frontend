@@ -122,11 +122,18 @@ export const MessagesList: React.FC<MessagesListProps> = ({ messages, authUserId
                     >
                         <Link href={`?property=${property.Property_ID}`}>
                             <div className="flex items-center gap-3">
-                                <img
-                                    src={property.images?.[0]?.Image_Image_URL || "https://via.placeholder.com/400x250"}
-                                    alt={property.Property_Title}
-                                    className="h-14 w-14 object-cover rounded-full"
-                                />
+                                {(() => {
+                                    const image = property.images?.find(img => img.Image_Order === 1)
+                                    const imageSrc = image?.Image_URL || `http://localhost:8000/storage/${image?.Image_Path}`
+                                    
+                                    return (
+                                        <img
+                                            src={imageSrc}
+                                            alt={property.Property_Title}
+                                            className="h-14 w-14 object-cover rounded-full"
+                                        />
+                                    )
+                                })()}
                                 <span className="text-sm">{property.Property_Address} {property.Property_City}</span>
                             </div>
                         </Link>
@@ -165,11 +172,18 @@ export const MessageConversation: React.FC<MessageConversationProps> = ({ messag
         <div className="flex flex-col h-full">
             {/* Header */}
             <div className="p-4 bg-white border-b flex items-center gap-3">
-                <img
-                    src={selectedProperty.images?.[0]?.Image_Image_URL || "https://via.placeholder.com/400x250"}
-                    alt={selectedProperty.Property_Title}
-                    className="h-14 w-14 bg-gray-300 object-cover rounded-full"
-                />
+                {(() => {
+                    const image = selectedProperty.images?.find(img => img.Image_Order === 1);
+                    const imageSrc = image?.Image_URL || `http://localhost:8000/storage/${image?.Image_Path}`;
+
+                    return (
+                        <img
+                            src={imageSrc}
+                            alt={selectedProperty.Property_Title}
+                            className="h-14 w-14 bg-gray-300 object-cover rounded-full"
+                        />
+                    );
+                })()}
                 <Block>
                     <span className="text-lg font-semibold">
                         {selectedProperty.Property_Address} {selectedProperty.Property_City}

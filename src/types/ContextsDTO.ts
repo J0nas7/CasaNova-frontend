@@ -10,6 +10,7 @@ export type User = {
     User_Address?: string;
     User_CreatedAt?: string;
     User_UpdatedAt?: string;
+    User_DeletedAt?: string;
 
     // Relationships
     properties?: Property[];

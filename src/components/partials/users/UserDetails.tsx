@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useUsersContext } from '@/contexts';
-import { selectAuthUser, selectAuthUserOrganisation, selectAuthUserSeat, useTypedSelector } from '@/redux';
-import { Organisation, TeamUserSeat, User } from '@/types';
+import { selectAuthUser, useTypedSelector } from '@/redux';
+import { User } from '@/types';
 import { Heading } from '@/components/ui/heading';
 import styles from "@/core-ui/styles/modules/User.settings.module.scss";
 import Link from 'next/link';
@@ -14,27 +14,16 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 const UserDetails: React.FC = () => {
     // Get user data and the save function from context
     const { saveUserChanges, removeUser } = useUsersContext()
-    const authUserSeats = useTypedSelector(selectAuthUserSeat); // Redux
-    const authUserOrganisation = useTypedSelector(selectAuthUserOrganisation); // Redux
     const authUser = useTypedSelector(selectAuthUser); // Redux
 
     const [renderUser, setRenderUser] = useState<User | undefined>(undefined)
-    const [renderOrganisation, setRenderOrganisation] = useState<Organisation | undefined>(undefined)
-    const [imagePreview, setImagePreview] = useState<string | undefined>(renderUser?.User_ImageSrc);
-
-    useEffect(() => {
-        if (authUserSeats && authUserSeats.team?.projects?.[0]?.Project_ID) {
-            setRenderOrganisation(authUserSeats.team?.organisation)
-        } else if (authUserOrganisation && authUserOrganisation.teams?.[0].projects?.[0].Project_ID) {
-            setRenderOrganisation(authUserOrganisation)
-        }
-    }, [authUserSeats, authUserOrganisation])
+    const [imagePreview, setImagePreview] = useState<string | undefined>(undefined);
 
     // Set initial user data when the component mounts
     useEffect(() => {
         if (authUser) {
             setRenderUser(authUser);
-            setImagePreview(authUser.User_ImageSrc);
+            if (authUser.User_Profile_Picture) setImagePreview(authUser.User_Profile_Picture);
         }
     }, [authUser]);
 
@@ -85,7 +74,6 @@ const UserDetails: React.FC = () => {
         <UserDetailsView
             user={renderUser}
             imagePreview={imagePreview}
-            renderOrganisation={renderOrganisation}
             handleChange={handleChange}
             handleImageUpload={handleImageUpload}
             handleSaveChanges={handleSaveChanges}
@@ -97,7 +85,6 @@ const UserDetails: React.FC = () => {
 export interface UserDetailsViewProps {
     user: User | undefined;
     imagePreview: string | undefined;
-    renderOrganisation: Organisation | undefined
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSaveChanges: () => void;
@@ -107,7 +94,6 @@ export interface UserDetailsViewProps {
 export const UserDetailsView: React.FC<UserDetailsViewProps> = ({
     user,
     imagePreview,
-    renderOrganisation,
     handleChange,
     handleImageUpload,
     handleSaveChanges,
@@ -137,7 +123,7 @@ export const UserDetailsView: React.FC<UserDetailsViewProps> = ({
                             type="text"
                             id="firstName"
                             name="User_FirstName"
-                            value={user.User_FirstName}
+                            value={user.User_First_Name}
                             onChange={handleChange}
                             className={styles.input}
                         />
@@ -149,7 +135,7 @@ export const UserDetailsView: React.FC<UserDetailsViewProps> = ({
                             type="text"
                             id="surname"
                             name="User_Surname"
-                            value={user.User_Surname}
+                            value={user.User_Last_Name}
                             onChange={handleChange}
                             className={styles.input}
                         />
@@ -204,28 +190,6 @@ export const UserDetailsView: React.FC<UserDetailsViewProps> = ({
                     )}
                 </div>
             </FlexibleBox>
-
-            {/* Display the teams the user is a part of */}
-            <div className={styles.userTeamsContainer}>
-                <Heading variant="h3" className={styles.teamsHeading}>Organisation this user is a part of</Heading>
-                {renderOrganisation ? (
-                    <ul className={styles.teamsList}>
-                        <li className={styles.teamItem}>
-                            <p>
-                                <strong>Organisation Name:</strong>{" "}
-                                <Link
-                                    href={`/organisation/${renderOrganisation.Organisation_ID}`}
-                                    className="blue-link-light"
-                                >
-                                    {renderOrganisation.Organisation_Name}
-                                </Link>
-                            </p>
-                        </li>
-                    </ul>
-                ) : (
-                    <p>This user is not part of any organisation.</p>
-                )}
-            </div>
         </Block>
     );
 };
