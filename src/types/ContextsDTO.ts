@@ -96,8 +96,7 @@ export type Message = {
     Sender_ID: number;
     Receiver_ID: number;
     Property_ID?: number;
-    Message_Message_Text: string;
-    Message_Sent_At: string;
+    Message_Text: string;
     Message_CreatedAt?: string;
     Message_UpdatedAt?: string;
 
@@ -109,7 +108,7 @@ export type Message = {
 
 export type MessageFields =
     "Message_ID" | "Sender_ID" | "Receiver_ID" | "Property_ID" |
-    "Message_Message_Text" | "Message_Sent_At" | "Message_CreatedAt" | "Message_UpdatedAt";
+    "Message_Text" | "Message_CreatedAt" | "Message_UpdatedAt";
 
 // Favorite Type
 export type Favorite = {

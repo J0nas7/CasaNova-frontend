@@ -13,14 +13,13 @@ import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 // Internal
-import { usePropertiesContext } from '@/contexts/'; // Ensure this is correctly set up
-import { Property, PropertyImage, PropertyStates, User } from '@/types';
-import { Block, Text } from '@/components/ui/block-text';
+import { useMessagesContext, usePropertiesContext } from '@/contexts/'; // Ensure this is correctly set up
+import { Message, Property, PropertyImage, PropertyStates, User } from '@/types';
 import { selectAuthUser, useTypedSelector } from '@/redux';
-import { FlexibleBox } from '@/components/ui/flexible-box';
 import { LoginForm } from '../auth/sign-in';
 import { PropertyImageCard } from './image/PropertyImage';
 import clsx from 'clsx';
+import { Loading, Block, Text } from '@/components';
 
 const PropertyDetails: React.FC = () => {
     const { propertyId } = useParams<{ propertyId: string }>(); // Get propertyId from URL
@@ -37,7 +36,16 @@ const PropertyDetails: React.FC = () => {
         }
     }, [propertyById])
 
-    if (!renderProperty) return <div>Loading...</div>
+    if (propertyById === false) {
+        return (
+            <Block className="page-content">
+                <Text>Property not found</Text>
+                <Link href="/my-listings" className="blue-link-light">Go to Your Listings</Link>
+            </Block>
+        )
+    }
+
+    if (!renderProperty) return <Loading /> // Show loading state while fetching data
 
     return (
         <PropertyDetailsView
@@ -184,7 +192,7 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
     setShowJumbotronHighlightImage,
     classNames
 }) => {
-    const [currentImageOrderNr, setCurrentImageOrderNr] = useState<number>(1);
+    const [currentImageOrderNr, setCurrentImageOrderNr] = useState<number>(0)
     const [currentRight, setCurrentRight] = useState<number>(0);
     const [nextRight, setNextRight] = useState<number>(100);
     const [rotationEnabled, setRotationEnabled] = useState<boolean>(enableAutoRotation);
@@ -262,7 +270,7 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
                 console.log("Interval cleared");
             }
         };
-    }, [imageCount, rotationEnabled, numberInRotation]);
+    }, [imageCount, rotationEnabled, numberInRotation])
 
     const handlePrev = () => {
         setRotationEnabled(false)
@@ -435,19 +443,30 @@ export const PropertyInformationSection: React.FC<PropertyInformationSectionProp
                     <span><strong>Size:</strong> {property.Property_Square_Feet} sqft</span>
                 </li>
             </ul>
-            <Block className="space-y-3">
-                <button
-                    className="button-blue"
-                    onClick={() => setShowMessageComposer(!showMessageComposer)}
-                >
-                    Write message to landlord
-                </button>
-                {showMessageComposer && (
-                    <PropertyMessageComposer
-                        property={property}
-                        authUser={authUser}
-                        setShowMessageComposer={setShowMessageComposer}
-                    />
+            <Block className="space-y-3 mt-3">
+                {authUser && property.messages && property.messages.length > 0 ? (
+                    <Link
+                        href={`/messages?property=${property.Property_ID}`}
+                        className="button-blue inline"
+                    >
+                        View Messages
+                    </Link>
+                ) : (
+                    <>
+                        <button
+                            className="button-blue"
+                            onClick={() => setShowMessageComposer(!showMessageComposer)}
+                        >
+                            Write message to landlord
+                        </button>
+                        {showMessageComposer && (
+                            <PropertyMessageComposer
+                                property={property}
+                                authUser={authUser}
+                                setShowMessageComposer={setShowMessageComposer}
+                            />
+                        )}
+                    </>
                 )}
             </Block>
         </div>
@@ -465,15 +484,38 @@ interface PropertyMessageComposerProps {
 }
 
 export const PropertyMessageComposer: React.FC<PropertyMessageComposerProps> = ({ property, authUser, setShowMessageComposer }) => {
+    const router = useRouter()
+    const { addMessage } = useMessagesContext()
     const messageComposerRef = useRef<HTMLDivElement>(null);
-    const [isSubscribed, setIsSubscribed] = useState(false);
+    const [isSubscribed, setIsSubscribed] = useState(false)
     const [message, setMessage] = useState("")
-
+    
     // Handle clicks outside taskDetailContainer but inside taskDetailModalBackground
     const handleBackgroundClick = (event: React.MouseEvent<HTMLDivElement>) => {
         if (messageComposerRef.current && !messageComposerRef.current.contains(event.target as Node)) {
             setShowMessageComposer(false)
         }
+    }
+
+    const handleMessageSend = async () => {
+        if (!authUser || !authUser.User_ID || !property.Property_ID) {
+            alert("User or Property ID is missing. Try again.");
+            return
+        }
+        
+        const messageData: Message = {
+            Sender_ID: authUser.User_ID,
+            Receiver_ID: property.User_ID,
+            Property_ID: property.Property_ID,
+            Message_Text: message
+        };
+        
+        setMessage(""); // Clear the message after sending
+        setShowMessageComposer(false); // Close the composer
+        
+        // Send the messageData to your backend or API
+        const messageSend = await addMessage(authUser.User_ID, messageData)
+        router.push(`/messages?property=${property.Property_ID}`)
     }
 
     useEffect(() => {
@@ -533,7 +575,7 @@ export const PropertyMessageComposer: React.FC<PropertyMessageComposerProps> = (
                                       `}
                                 </style>
 
-                                <button className="w-full blue-link-light">Send Message</button>
+                                <button className="w-full blue-link-light" onClick={handleMessageSend}>Send Message</button>
                             </>
                         ) : (
                             <Card className="p-4">

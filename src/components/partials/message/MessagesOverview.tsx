@@ -3,20 +3,27 @@
 // External
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import clsx from "clsx";
 
 // Internal
+import styles from "@/core-ui/styles/modules/Messages.module.scss";
 import { useMessagesContext } from "@/contexts";
 import { selectAuthUser, useTypedSelector } from "@/redux";
 import { Message, Property, User } from "@/types";
 import { SignInView } from "@/app/sign-in/page";
-import Link from "next/link";
-import clsx from "clsx";
 import { Block, Text } from "@/components/ui/block-text";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 export const MessagesOverview = () => {
-    const authUser = useTypedSelector(selectAuthUser);
+    // Hooks
     const { messagesById, readMessagesByUserId } = useMessagesContext();
     const searchParams = useSearchParams();
+
+    // State
+    const authUser = useTypedSelector(selectAuthUser);
+    const [openedMessagesList, setOpenedMessagesList] = useState<boolean>(false)
 
     // Get Property_ID from search params
     const propertyIdFromUrl = searchParams.get("property");
@@ -36,9 +43,19 @@ export const MessagesOverview = () => {
     if (!authUser?.User_ID) return <SignInView />
 
     return (
-        <div className="flex flex-col sm:flex-row sm:h-screen w-full">
+        <div className={styles.messagesWrapper}>
             {/* Left Sidebar - Messages List */}
-            <div className="w-full sm:w-1/3 border-b sm:border-r border-gray-300 bg-white overflow-y-auto sm:h-full">
+            <div className={styles.mobileMenuTrigger}>
+                <span>See all messages</span>
+                <FontAwesomeIcon 
+                    icon={faBars}
+                    onClick={() => setOpenedMessagesList(!openedMessagesList)} 
+                />
+            </div>
+            <div className={clsx(
+                styles.messagesList,
+                { [styles.opened]: openedMessagesList },
+            )}>
                 <MessagesList
                     messages={messagesById}
                     authUserId={authUser.User_ID}
@@ -47,7 +64,7 @@ export const MessagesOverview = () => {
             </div>
 
             {/* Right Side - Message Conversation */}
-            <div className="w-full sm:w-2/3 bg-gray-100 sm:h-full">
+            <div className={styles.messageConversation}>
                 {selectedProperty ? (
                     <MessageConversation
                         messages={messagesById}
@@ -57,11 +74,11 @@ export const MessagesOverview = () => {
                 ) : (
                     <>
                         {propertyIdFromUrl ? (
-                            <div className="h-full flex items-center justify-center text-gray-500">
+                            <div className={styles.notFound}>
                                 The conversation was not found
                             </div>
                         ) : (
-                            <div className="h-full flex items-center justify-center text-gray-500">
+                            <div className={styles.selectConversation}>
                                 Select a conversation to start chatting
                             </div>
                         )}
@@ -177,17 +194,19 @@ export const MessageConversation: React.FC<MessageConversationProps> = ({ messag
                     const imageSrc = image?.Image_URL || `http://localhost:8000/storage/${image?.Image_Path}`;
 
                     return (
-                        <img
-                            src={imageSrc}
-                            alt={selectedProperty.Property_Title}
-                            className="h-14 w-14 bg-gray-300 object-cover rounded-full"
-                        />
+                        <Link href={`/listing/${selectedProperty.Property_ID}`}>
+                            <img
+                                src={imageSrc}
+                                alt={selectedProperty.Property_Title}
+                                className="h-14 w-14 bg-gray-300 object-cover rounded-full"
+                            />
+                        </Link>
                     );
                 })()}
                 <Block>
-                    <span className="text-lg font-semibold">
-                        {selectedProperty.Property_Address} {selectedProperty.Property_City}
-                    </span>
+                    <Link href={`/listing/${selectedProperty.Property_ID}`} className="text-lg font-semibold">
+                        {selectedProperty.Property_Address}, {selectedProperty.Property_City}
+                    </Link>
                     <span className="text-md text-gray-500 block">
                         {selectedProperty.user?.User_First_Name} {selectedProperty.user?.User_Last_Name}
                     </span>
@@ -228,7 +247,7 @@ export const MessageConversation: React.FC<MessageConversationProps> = ({ messag
                                 "bg-gray-200 text-gray-800": msg.Sender_ID !== authUserId
                             }
                         )}>
-                            {msg.Message_Message_Text}
+                            {msg.Message_Text}
                         </div>
                     </div>
                 ))}

@@ -233,6 +233,8 @@ interface PropertyCardProps {
 }
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
+    const image = property.images?.find(img => img.Image_Order === 1)
+
     return (
         <div className="bg-white p-4 rounded-lg shadow-md transition hover:shadow-lg group">
             <div className="relative w-full h-48 rounded-md overflow-hidden flex items-center justify-center">
@@ -240,7 +242,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
                     property={property}
                     enableAutoRotation={false}
                     numberInRotation={1}
-                    image={property.images?.[0] || undefined}
+                    image={image || undefined}
                     setShowJumbotronHighlightImage={() => null}
                     classNames={{
                         rotationWrapper: "w-full h-full max-h-48 p-1 flex items-center justify-center",
@@ -312,7 +314,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties }) => {
                 scrollWheelZoom={true}
                 style={{
                     width: '100%',
-                    height: '100%', 
+                    height: '100%',
                     position: 'absolute',
                     zIndex: 8,
                 }}
@@ -321,66 +323,70 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties }) => {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {properties.map((property: Property) => (
-                    <Marker
-                        key={property.Property_ID}
-                        position={[property.Property_Latitude, property.Property_Longitude]}
-                        icon={markerIcon}
-                    >
-                        <Popup>
-                            <div className="block w-[280px] h-[110px]">
-                                <div className="flex gap-2">
-                                    {/* Property Image with Fixed Width */}
-                                    <JumbotronImageRotation
-                                        property={property}
-                                        enableAutoRotation={false}
-                                        numberInRotation={1}
-                                        image={property.images?.[0] || undefined}
-                                        setShowJumbotronHighlightImage={() => null}
-                                        classNames={{
-                                            rotationWrapper: "w-full h-full p-1 flex items-center justify-center",
-                                            rotationImageWrapper: "relative w-full h-auto",
-                                            rotationImage: "w-full h-[110px] object-cover rounded-lg",
-                                        }}
-                                    />
-                                    {/* <PropertyImageCard property={property} className="w-1/3 h-[110px] object-cover rounded-lg" /> */}
-                                    
-                                    <Link href={`/listing/${property.Property_ID}`}>
-                                        <div className="flex-1 flex flex-col justify-between">
-                                            {/* Property Postal Code and City */}
-                                            <div className="text-sm text-gray-600">
-                                                <span className="font-semibold">{property.Property_City}</span>
-                                                <span className="ml-2 text-gray-500">{property.Property_Zip_Code}</span>
-                                            </div>
+                {properties.map((property: Property) => {
+                    const image = property.images?.find(img => img.Image_Order === 1)
 
-                                            {/* Property Title */}
-                                            <div className="mt-1 text-sm text-gray-800">
-                                                {property.Property_Title}
-                                            </div>
+                    return (
+                        <Marker
+                            key={property.Property_ID}
+                            position={[property.Property_Latitude, property.Property_Longitude]}
+                            icon={markerIcon}
+                        >
+                            <Popup>
+                                <div className="block w-[280px] h-[110px]">
+                                    <div className="flex gap-2">
+                                        {/* Property Image with Fixed Width */}
+                                        <JumbotronImageRotation
+                                            property={property}
+                                            enableAutoRotation={false}
+                                            numberInRotation={1}
+                                            image={image || undefined}
+                                            setShowJumbotronHighlightImage={() => null}
+                                            classNames={{
+                                                rotationWrapper: "w-full h-full p-1 flex items-center justify-center",
+                                                rotationImageWrapper: "relative w-full h-auto",
+                                                rotationImage: "w-full h-[110px] object-cover rounded-lg",
+                                            }}
+                                        />
+                                        {/* <PropertyImageCard property={property} className="w-1/3 h-[110px] object-cover rounded-lg" /> */}
 
-                                            <div className="mt-1 flex justify-between items-center">
-                                                {/* Property Size and Rooms */}
-                                                <div className="flex space-x-2">
-                                                    <div className="text-sm text-gray-500">
-                                                        {property.Property_Square_Feet}<small> m²</small>
-                                                    </div>
-                                                    <div className="text-sm text-gray-500">
-                                                        {property.Property_Num_Bedrooms}<small> vær.</small>
-                                                    </div>
+                                        <Link href={`/listing/${property.Property_ID}`}>
+                                            <div className="flex-1 flex flex-col justify-between">
+                                                {/* Property Postal Code and City */}
+                                                <div className="text-sm text-gray-600">
+                                                    <span className="font-semibold">{property.Property_City}</span>
+                                                    <span className="ml-2 text-gray-500">{property.Property_Zip_Code}</span>
                                                 </div>
 
-                                                {/* Property Price */}
-                                                <div className="text-lg font-bold text-green-600">
-                                                    {property.Property_Price_Per_Month.toLocaleString()} kr.
+                                                {/* Property Title */}
+                                                <div className="mt-1 text-sm text-gray-800">
+                                                    {property.Property_Title}
+                                                </div>
+
+                                                <div className="mt-1 flex justify-between items-center">
+                                                    {/* Property Size and Rooms */}
+                                                    <div className="flex space-x-2">
+                                                        <div className="text-sm text-gray-500">
+                                                            {property.Property_Square_Feet}<small> m²</small>
+                                                        </div>
+                                                        <div className="text-sm text-gray-500">
+                                                            {property.Property_Num_Bedrooms}<small> vær.</small>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Property Price */}
+                                                    <div className="text-lg font-bold text-green-600">
+                                                        {property.Property_Price_Per_Month.toLocaleString()} kr.
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </Link>
+                                        </Link>
+                                    </div>
                                 </div>
-                            </div>
-                        </Popup>
-                    </Marker>
-                ))}
+                            </Popup>
+                        </Marker>
+                    )
+                })}
             </MapContainer>
         </div>
     );

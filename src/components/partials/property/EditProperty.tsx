@@ -15,15 +15,12 @@ import "react-quill/dist/quill.snow.css"; // Import the Quill styles
 // Internal
 import { usePropertiesContext } from "@/contexts";
 import { Property, PropertyFields, PropertyStates, propertyTypeMap } from "@/types";
-import { Block, Text } from "@/components/ui/block-text";
-import { FlexibleBox } from "@/components/ui/flexible-box";
-import { Heading } from "@/components/ui/heading";
-import { Field } from "@/components/ui/input-field";
 import { selectAuthUser, useTypedSelector } from "@/redux";
 import { SignInView } from "@/app/sign-in/page";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
 import Link from "next/link";
+import { Loading, Block, Text, FlexibleBox, Heading, Field } from "@/components";
 
 const EditProperty: React.FC = () => {
     // Hooks
@@ -165,14 +162,7 @@ const EditProperty: React.FC = () => {
                     numberOfColumns={2}
                 >
                     {!renderProperty && (
-                        <div className="flex flex-col gap-4 justify-center items-center">
-                            <img
-                                src="/red-spinner.gif"
-                                alt="Loading..."
-                                className="w-10 h-10"
-                            />
-                            <p className="text-gray-500 text-center">Loading property...</p>
-                        </div>
+                        <Loading />
                     )}
 
                     {renderProperty && (

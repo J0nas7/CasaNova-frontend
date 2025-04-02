@@ -250,7 +250,7 @@ export const PopularAds: React.FC<StartpageProps> = ({ properties }) => {
                                             property={property}
                                             enableAutoRotation={false}
                                             numberInRotation={1}
-                                            image={property.images?.[0] || undefined}
+                                            image={image || undefined}
                                             setShowJumbotronHighlightImage={() => null}
                                             classNames={{
                                                 rotationWrapper: "w-full h-full p-1 flex items-center justify-center",

@@ -19,10 +19,11 @@ export const PropertyImageCard: React.FC<PropertyImageProps> = ({ property, prop
                 ? `http://localhost:8000/storage/${propertyImage.Image_Path}`
                 : imageSrc
     } else if (property) {
-        imageSrc = property.images?.[0]?.Image_URL
-            ? property.images[0].Image_URL
-            : property.images?.[0]?.Image_Path
-                ? `http://localhost:8000/storage/${property.images[0].Image_Path}`
+        const image = property.images?.find(img => img.Image_Order === 1)
+        imageSrc = image?.Image_URL
+            ? image?.Image_URL
+            : image?.Image_Path
+                ? `http://localhost:8000/storage/${image?.Image_Path}`
                 : imageSrc
     }
     
