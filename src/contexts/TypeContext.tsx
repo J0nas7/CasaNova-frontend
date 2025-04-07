@@ -1,9 +1,8 @@
 // External
-import React, { createContext, useContext, useState, useEffect } from "react"
+import React, { useState } from "react"
 
 // Internal
 import { useTypeAPI } from "@/hooks"
-import { selectIsLoggedIn, useTypedSelector } from "@/redux"
 
 // Generic context and provider to handle different resources like teams, tasks, organisations, etc.
 export const useResourceContext = <T extends { [key: string]: any }, IDKey extends keyof T>(

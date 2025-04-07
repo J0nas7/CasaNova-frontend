@@ -6,7 +6,7 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { faArrowLeft, faArrowRight, faBuilding, faCamera, faFaucetDrip, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight, faBuilding, faCamera, faFaucetDrip, faHouseChimney, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 // Dynamically import ReactQuill with SSR disabled
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -21,11 +21,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
 import Link from "next/link";
 import { Loading, Block, Text, FlexibleBox, Heading, Field } from "@/components";
+import { env } from "@/env.urls";
 
 const EditProperty: React.FC = () => {
     // Hooks
     const router = useRouter();
-    const { propertyById, readPropertyById, updatePropertyWithImages } = usePropertiesContext();
+    const { propertyById, readPropertyById, updatePropertyWithImages, updatePropertyAvailability } = usePropertiesContext();
 
     // Redux
     const authUser = useTypedSelector(selectAuthUser);
@@ -110,6 +111,21 @@ const EditProperty: React.FC = () => {
             alert("An error happened, please try again.")
         }
     };
+    
+    const handleUpdateAvailability = async () => {
+        if (!confirm("Are you sure you want to change the avaiability of your listing?") || !renderProperty) return
+        
+        const property = await updatePropertyAvailability(renderProperty, {
+            Property_Available_From: renderProperty.Property_Available_From,
+            Property_Is_Active: !renderProperty.Property_Is_Active
+        })
+    
+        if (property) {
+            window.location.href = `/edit-listing/${property.Property_ID}`;
+        } else {
+            alert("An error happened, please try again.")
+        }
+    };
 
     /**
      * Effects
@@ -186,6 +202,7 @@ const EditProperty: React.FC = () => {
                                     doTogglePropertyImages={doTogglePropertyImages}
                                     doTogglePropertyAmendities={doTogglePropertyAmendities}
                                     handleSaveProperty={handleSaveProperty}
+                                    handleUpdateAvailability={handleUpdateAvailability}
                                 />
                             )}
                         </>
@@ -193,105 +210,6 @@ const EditProperty: React.FC = () => {
                 </FlexibleBox>
             </div>
         </Block>
-    );
-};
-
-interface PropertyFormProps {
-    newProperty: Property;
-    handleInputChange: (field: PropertyFields, value: string | number) => void;
-}
-
-export const PropertyAddressForm: React.FC<PropertyFormProps> = ({ newProperty, handleInputChange }) => {
-    const [searchAddress, setSearchAddress] = useState<string>("");
-    const [searchResults, setSearchResults] = useState<
-        {
-            display_name: string;
-            lat: number;
-            lon: number;
-        }[]
-    >([]);
-
-    useEffect(() => {
-        const fetchAddresses = async () => {
-            if (!searchAddress) return;
-
-            try {
-                const response = await fetch(
-                    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchAddress)}`
-                );
-                const data = await response.json();
-
-                setSearchResults(
-                    data.map((place: any) => ({
-                        display_name: place.display_name,
-                        lat: place.lat,
-                        lon: place.lon,
-                    }))
-                );
-            } catch (error) {
-                console.error("Error fetching address:", error);
-            }
-        };
-
-        const delayDebounce = setTimeout(fetchAddresses, 500);
-
-        return () => clearTimeout(delayDebounce);
-    }, [searchAddress]);
-
-    return (
-        <div className="bg-white shadow-md rounded-xl p-6">
-            <h2 className="text-xl font-semibold mb-4">Select your rental from the list or create a new one</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Field
-                    lbl="Enter postal code"
-                    value={newProperty.Property_Zip_Code}
-                    onChange={(e: string) => handleInputChange("Property_Zip_Code", parseInt(e))}
-                    type="text"
-                    disabled={false}
-                    className="w-full"
-                />
-                <Field
-                    lbl="Enter city"
-                    value={newProperty.Property_City}
-                    onChange={(e: string) => handleInputChange("Property_City", e)}
-                    type="text"
-                    disabled={false}
-                    className="w-full"
-                />
-                <Field
-                    lbl="Search for address"
-                    value={searchAddress}
-                    onChange={(e: string) => setSearchAddress(e)}
-                    type="text"
-                    disabled={false}
-                    className="w-full"
-                />
-            </div>
-
-            {searchResults.length > 0 && (
-                <ul className="w-full md:w-1/2 bg-white border rounded-lg shadow-md mt-4">
-                    {searchResults.slice(0, 5).map((result, index) => (
-                        <li
-                            key={index}
-                            className="flex items-center justify-between p-2 hover:bg-gray-200"
-                        >
-                            <span>{result.display_name}</span>
-                            <button className="button-blue" onClick={() => {
-                                if (!result.display_name.includes(newProperty.Property_Zip_Code) ||
-                                    !result.display_name.includes(newProperty.Property_City)) {
-                                    alert("Please select an address within the city and postal code you entered.")
-                                    return
-                                }
-
-                                handleInputChange("Property_Latitude", parseInt(result.lat.toString(), 10))
-                                handleInputChange("Property_Longitude", parseInt(result.lon.toString(), 10))
-                                handleInputChange("Property_Address", result.display_name)
-                            }}>Choose</button>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
     );
 };
 
@@ -450,7 +368,7 @@ const ImageItem: React.FC<ImageItemProps> = ({ file, index, moveFile, moveDragge
         >
             <img
                 src={typeof file === 'string'
-                    ? `http://localhost:8000/storage/${file}`
+                    ? `${env.url.API_URL}/storage/${file}`
                     : URL.createObjectURL(file)}
                 alt={file instanceof File ? file.name : "Image"}
                 className="w-full h-full object-cover rounded-md hover:cursor-move"
@@ -556,6 +474,7 @@ interface PropertyDetailsFormProps {
     doTogglePropertyImages: () => void;
     doTogglePropertyAmendities: () => void;
     handleSaveProperty: () => void;
+    handleUpdateAvailability: () => Promise<void>;
 }
 
 export const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
@@ -564,11 +483,29 @@ export const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
     doTogglePropertyImages,
     doTogglePropertyAmendities,
     handleSaveProperty,
+    handleUpdateAvailability
 }) => {
     return (
         <div className="bg-white shadow-md rounded-xl p-6">
-            <Heading variant="h2">Listing details</Heading>
-            <Heading variant="h3">{newProperty.Property_Address}</Heading>
+            <Block className="flex flex-col md:flex-row justify-between">
+                <Block>
+                    <Heading variant="h2">Listing details</Heading>
+                    <Heading variant="h3">{newProperty.Property_Address}</Heading>
+                </Block>
+                <Block className="flex gap-2">
+                    <Link href={`/listing/${newProperty.Property_ID}`} className="button-blue !flex gap-2 items-center">
+                        <FontAwesomeIcon icon={faHouseChimney} />
+                        <span>View Listing</span>
+                    </Link>
+                    <button
+                        type="button"
+                        className="button-blue"
+                        onClick={handleUpdateAvailability}
+                    >
+                        {newProperty.Property_Is_Active ? "Mark listing as rented out" : "Mark listing as available"}
+                    </button>
+                </Block>
+            </Block>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 items-center">
                 <Field
@@ -576,7 +513,7 @@ export const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
                     value={(newProperty.Property_Title ?? "").toString()}
                     onChange={(e: string) => handleInputChange("Property_Title", e)}
                     type="text"
-                    disabled={false}
+                    disabled={!newProperty.Property_Is_Active}
                     className="w-full"
                 />
                 <Field
@@ -584,7 +521,7 @@ export const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
                     value={(newProperty.Property_Price_Per_Month ?? "").toString()}
                     onChange={(e: string) => handleInputChange("Property_Price_Per_Month", parseInt(e))}
                     type="number"
-                    disabled={false}
+                    disabled={!newProperty.Property_Is_Active}
                     className="w-full"
                 />
                 <Field
@@ -592,7 +529,7 @@ export const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
                     value={(newProperty.Property_Num_Bedrooms ?? "").toString()}
                     onChange={(e: string) => handleInputChange("Property_Num_Bedrooms", parseInt(e))}
                     type="number"
-                    disabled={false}
+                    disabled={!newProperty.Property_Is_Active}
                     className="w-full"
                 />
                 <Field
@@ -600,7 +537,7 @@ export const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
                     value={(newProperty.Property_Num_Bathrooms ?? "").toString()}
                     onChange={(e: string) => handleInputChange("Property_Num_Bathrooms", parseInt(e))}
                     type="number"
-                    disabled={false}
+                    disabled={!newProperty.Property_Is_Active}
                     className="w-full"
                 />
                 <Field
@@ -608,7 +545,7 @@ export const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
                     value={(newProperty.Property_Square_Feet ?? "").toString()}
                     onChange={(e: string) => handleInputChange("Property_Square_Feet", parseInt(e))}
                     type="number"
-                    disabled={false}
+                    disabled={!newProperty.Property_Is_Active}
                     className="w-full"
                 />
                 <div className="w-full">
@@ -619,6 +556,7 @@ export const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
                         value={(newProperty.Property_Property_Type ?? "").toString()}
                         onChange={(e) => handleInputChange("Property_Property_Type", e.target.value)}
                         className="mt-1 px-3 h-14 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        disabled={!newProperty.Property_Is_Active}
                     >
                         <option value="">Select a property type</option>
                         {Object.entries(propertyTypeMap).map(([key, value]) => (
@@ -645,6 +583,7 @@ export const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
                                 ["blockquote"],
                             ],
                         }}
+                        readOnly={!newProperty.Property_Is_Active}
                     />
                 </div>
             </div>

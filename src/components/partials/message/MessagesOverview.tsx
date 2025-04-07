@@ -15,6 +15,7 @@ import { SignInView } from "@/app/sign-in/page";
 import { Block, Text } from "@/components/ui/block-text";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { env } from "@/env.urls";
 
 export const MessagesOverview = () => {
     // Hooks
@@ -141,7 +142,7 @@ export const MessagesList: React.FC<MessagesListProps> = ({ messages, authUserId
                             <div className="flex items-center gap-3">
                                 {(() => {
                                     const image = property.images?.find(img => img.Image_Order === 1)
-                                    const imageSrc = image?.Image_URL || `http://localhost:8000/storage/${image?.Image_Path}`
+                                    const imageSrc = image?.Image_URL || `${env.url.API_URL}/storage/${image?.Image_Path}`
                                     
                                     return (
                                         <img
@@ -191,7 +192,7 @@ export const MessageConversation: React.FC<MessageConversationProps> = ({ messag
             <div className="p-4 bg-white border-b flex items-center gap-3">
                 {(() => {
                     const image = selectedProperty.images?.find(img => img.Image_Order === 1);
-                    const imageSrc = image?.Image_URL || `http://localhost:8000/storage/${image?.Image_Path}`;
+                    const imageSrc = image?.Image_URL || `${env.url.API_URL}/storage/${image?.Image_Path}`;
 
                     return (
                         <Link href={`/listing/${selectedProperty.Property_ID}`}>

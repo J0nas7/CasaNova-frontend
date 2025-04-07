@@ -84,6 +84,11 @@ export type PropertiesContextType = {
     addProperty: (parentId: number, object?: Property) => Promise<void>
     createPropertyWithImages: (property: Property, images: File[]) => Promise<Property | false>
     updatePropertyWithImages: (property: Property, images: (string | File)[]) => Promise<Property | false>
+    updatePropertyAvailability: (property: Property, availabilityData: {
+        Property_Available_From?: string;
+        Property_Available_To?: string;
+        Property_Is_Active: boolean;
+    }) => Promise<Property | false>;
     savePropertyChanges: (propertyChanges: Property, parentId: number) => Promise<void>
     removeProperty: (itemId: number, parentId: number) => Promise<boolean>
 };
@@ -91,7 +96,7 @@ export type PropertiesContextType = {
 export const PropertiesContext = createContext<PropertiesContextType | undefined>(undefined);
 
 export const PropertiesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { httpPostWithData } = useAxios()
+    const { httpPostWithData, httpPutWithData } = useAxios()
 
     const {
         items: properties,
@@ -114,11 +119,11 @@ export const PropertiesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         "Property_ID",
         "users"
     );
-    
+
     const createPropertyWithImages = async (property: Property, images: File[]) => {
         console.log("createPropertyWithImages", property, images)
         const result = await httpPostWithData("createPropertyWithImages", { ...property, images })
-        
+
         if (result.property) {
             return result.property
         } else {
@@ -126,17 +131,61 @@ export const PropertiesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         }
     }
 
+    /**
+     * Updates a property along with its associated images.
+     * Sends the updated property data and images to the API.
+     * 
+     * @param property - The property object to be updated.
+     * @param images - An array of images (either strings or File objects) to be associated with the property.
+     * @returns The updated property object if successful, or `false` if the update fails.
+     */
     const updatePropertyWithImages = async (property: Property, images: (string | File)[]) => {
-        console.log(images.length, "updatePropertyWithImages before API", property, images)
-        const result = await httpPostWithData(`updatePropertyWithImages/${property.Property_ID}`, { ...property, images })
-        console.log("updatePropertyWithImages after API", result)
-        
+        //console.log(images.length, "updatePropertyWithImages before API", property, images);
+
+        // Make an API call to update the property with the provided images
+        const result = await httpPostWithData(`updatePropertyWithImages/${property.Property_ID}`, { ...property, images });
+
+        //console.log("updatePropertyWithImages after API", result);
+
+        // Return the updated property if the API call was successful, otherwise return false
         if (result.property) {
-            return result.property
+            return result.property;
         } else {
-            return false
+            return false;
         }
     }
+
+    /**
+     * Updates the availability details of a property.
+     * Sends the availability data to the API for the specified property.
+     * 
+     * @param propertyId - The ID of the property to be updated.
+     * @param availabilityData - An object containing the availability details (e.g., dates and active status).
+     * @returns A success message if the update is successful, or `false` if it fails.
+     */
+    const updatePropertyAvailability = async (
+        property: Property,
+        availabilityData: {
+            Property_Available_From?: string;
+            Property_Available_To?: string;
+            Property_Is_Active: boolean;
+        }
+    ): Promise<Property | false> => {
+        try {
+            // Make an API call to update the property availability
+            const result = await httpPutWithData(`properties/${property.Property_ID}/availability`, availabilityData);
+
+            // Return the updated property if the API call was successful, otherwise return false
+            if (result.property) {
+                return result.property;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.error("Error updating property availability:", error);
+            return false;
+        }
+    };
 
     return (
         <PropertiesContext.Provider value={{
@@ -153,6 +202,7 @@ export const PropertiesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             addProperty,
             createPropertyWithImages,
             updatePropertyWithImages,
+            updatePropertyAvailability,
             savePropertyChanges,
             removeProperty,
             // propertyLoading,

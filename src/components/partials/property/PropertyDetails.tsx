@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from "next/navigation";
 import Link from 'next/link';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBuilding, faBed, faBath, faRulerCombined, faUsers, faMoneyBillWave, faXmark, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faBuilding, faBed, faBath, faRulerCombined, faUsers, faMoneyBillWave, faXmark, faArrowLeft, faArrowRight, faHouseChimney } from "@fortawesome/free-solid-svg-icons";
 
 // Dynamically import ReactQuill with SSR disabled
 import "react-quill/dist/quill.snow.css"; // Import the Quill styles
@@ -20,6 +20,7 @@ import { LoginForm } from '../auth/sign-in';
 import { PropertyImageCard } from './image/PropertyImage';
 import clsx from 'clsx';
 import { Loading, Block, Text } from '@/components';
+import { env } from '@/env.urls';
 
 const PropertyDetails: React.FC = () => {
     const { propertyId } = useParams<{ propertyId: string }>(); // Get propertyId from URL
@@ -80,6 +81,14 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({ proper
 
     return (
         <Block className="page-content">
+            {/* Property Availability */}
+            {!property.Property_Is_Active && (
+                <Block className="bg-red-500 bg-opacity-50 text-white p-4 rounded-lg mb-4">
+                    <FontAwesomeIcon icon={faHouseChimney} className="mr-2" />
+                    This listing is marked as unavailable.
+                </Block>
+            )}
+            
             {/* Jumbotron - Property Images */}
             <JumbotronImageRotation
                 property={property}
@@ -321,7 +330,7 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
                             )}
                         >
                             <img
-                                src={image?.current?.Image_URL || `http://localhost:8000/storage/${image?.current?.Image_Path}`}
+                                src={image?.current?.Image_URL || `${env.url.API_URL}/storage/${image?.current?.Image_Path}`}
                                 alt={`Property Image ${currentImageOrderNr + i + 1}`}
                                 className={clsx(
                                     classNames.rotationImage,
@@ -330,7 +339,7 @@ export const JumbotronImageRotation: React.FC<JumbotronImageRotationProps> = ({
                                 style={{ left: `${(currentRight)}%` }}
                             />
                             <img
-                                src={image?.next?.Image_URL || `http://localhost:8000/storage/${image?.next?.Image_Path}`}
+                                src={image?.next?.Image_URL || `${env.url.API_URL}/storage/${image?.next?.Image_Path}`}
                                 alt={`Property Image ${currentImageOrderNr + i + 2}`}
                                 className={clsx(
                                     classNames.rotationImage,
