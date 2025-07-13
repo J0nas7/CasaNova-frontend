@@ -1,20 +1,20 @@
 "use client";
 
 // External Imports
-import React, { use, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouseChimney, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 // Internal Imports
-import { usePropertiesContext } from "@/contexts";
-import { Property } from "@/types";
-import { selectAuthUser, useTypedSelector } from "@/redux";
-import { SignInView } from "@/app/sign-in/page";
-import { PropertyCard } from "./SearchProperties";
-import { FlexibleBox } from "@/components/ui/flexible-box";
+import { SignInView } from '@/components/partials/auth/sign-in';
 import { Block, Text } from "@/components/ui/block-text";
+import { FlexibleBox } from "@/components/ui/flexible-box";
+import { usePropertiesContext } from "@/contexts";
+import { selectAuthUser, useTypedSelector } from "@/redux";
+import { Property } from "@/types";
 import Link from "next/link";
+import { PropertyCard } from "./SearchProperties";
 
 const UserProperties: React.FC = () => {
     // Hooks
@@ -66,7 +66,7 @@ const UserProperties: React.FC = () => {
             </div>
         )
     }
-    
+
     if (!renderProperties || renderProperties.length === 0) {
         return (
             <Block className="page-content">

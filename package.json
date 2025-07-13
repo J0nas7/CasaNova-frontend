@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "deploy": "next build && gcloud config set project casanova-nextjs-frontend && gcloud app deploy app.yaml --version=0-1-0 --quiet",
     "start": "next start",
     "lint": "next lint",
     "test": "jest"

@@ -1,23 +1,20 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
 import { Block, Heading, Text } from "@/components";
 import { useAxios, useDebounce } from "@/hooks";
 import { selectAuthUser, useTypedSelector } from "@/redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { User } from "@/types";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
+import React, { ChangeEvent, useEffect, useState } from "react";
 
 const SearchTextRotator = () => {
     const searchTerms = [
         "anything",
-        "organisations",
-        "teams",
-        "projects",
-        "tasks",
-        "comments",
-        "files",
+        "cities",
+        "streets",
+        "municipalities",
     ];
-    
+
     const [displayedText, setDisplayedText] = useState<string>("Search for anything");
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [isSwitching, setIsSwitching] = useState<boolean>(false);

@@ -1,21 +1,21 @@
 "use client";
 
 // External
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import clsx from "clsx";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 // Internal
-import styles from "@/core-ui/styles/modules/Messages.module.scss";
-import { useMessagesContext } from "@/contexts";
-import { selectAuthUser, useTypedSelector } from "@/redux";
-import { Message, Property, User } from "@/types";
-import { SignInView } from "@/app/sign-in/page";
+import { SignInView } from '@/components/partials/auth/sign-in';
 import { Block, Text } from "@/components/ui/block-text";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { useMessagesContext } from "@/contexts";
+import styles from "@/core-ui/styles/modules/Messages.module.scss";
 import { env } from "@/env.urls";
+import { selectAuthUser, useTypedSelector } from "@/redux";
+import { Message, Property } from "@/types";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const MessagesOverview = () => {
     // Hooks
@@ -48,9 +48,9 @@ export const MessagesOverview = () => {
             {/* Left Sidebar - Messages List */}
             <div className={styles.mobileMenuTrigger}>
                 <span>See all messages</span>
-                <FontAwesomeIcon 
+                <FontAwesomeIcon
                     icon={faBars}
-                    onClick={() => setOpenedMessagesList(!openedMessagesList)} 
+                    onClick={() => setOpenedMessagesList(!openedMessagesList)}
                 />
             </div>
             <div className={clsx(
@@ -143,7 +143,7 @@ export const MessagesList: React.FC<MessagesListProps> = ({ messages, authUserId
                                 {(() => {
                                     const image = property.images?.find(img => img.Image_Order === 1)
                                     const imageSrc = image?.Image_URL || `${env.url.API_URL}/storage/${image?.Image_Path}`
-                                    
+
                                     return (
                                         <img
                                             src={imageSrc}

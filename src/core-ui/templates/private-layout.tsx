@@ -2,17 +2,13 @@
 import React from "react";
 
 // Internal
-import { Header, Footer } from "../";
-import { TaskDetailWithModal } from "@/components/partials/task/TaskDetails";
-import { TaskTimeTrackPlayer } from "@/components/partials/task/TaskTimeTrackPlayer";
+import { Footer, Header } from "../";
 
 export const PrivateLayout = (
     { children }: { children: React.ReactNode }
 ) => {
     return (
         <div className="layout-container">
-            {/* <TaskDetailWithModal />
-            <TaskTimeTrackPlayer /> */}
             <Header />
             <div className="content-wrapper">
                 <Footer />

@@ -25,7 +25,7 @@ export default function LayoutController(
     if (isLoading) return null
     
     return (
-        <div className="giveortake-wrapper">
+        <div className="casanova-wrapper">
             <TypeProvider>
                 <PrivateLayout>
                     {children}

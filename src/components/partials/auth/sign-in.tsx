@@ -1,13 +1,13 @@
 "use client"
 
 // External
-import Link from "next/link"
-import React, { FormEvent, useEffect, useState } from "react"
 import { useTranslation } from "next-i18next"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
+import React, { FormEvent, useState } from "react"
 
 // Internal
-import { Field, Heading } from "@/components"
+import { Block, Field, Heading } from "@/components"
 import { useAuth } from "@/hooks"
 
 export const LoginForm: React.FC = () => {
@@ -94,5 +94,13 @@ export const LoginForm: React.FC = () => {
                 </Link>
             </p>
         </>
+    )
+}
+
+export const SignInView = () => {
+    return (
+        <Block className="mx-auto w-96 flex flex-col h-full justify-center">
+            <LoginForm />
+        </Block>
     )
 }

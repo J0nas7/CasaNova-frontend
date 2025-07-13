@@ -1,27 +1,27 @@
 "use client";
 
 // External
+import { faArrowLeft, faArrowRight, faBuilding, faCamera, faFaucetDrip, faHouseChimney, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import dynamic from "next/dynamic";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useParams, useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
-import { faArrowLeft, faArrowRight, faBuilding, faCamera, faFaucetDrip, faHouseChimney, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import "react-quill/dist/quill.snow.css"; // Import the Quill styles
 
 // Dynamically import ReactQuill with SSR disabled
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import "react-quill/dist/quill.snow.css"; // Import the Quill styles
 
 // Internal
+import { Block, Field, FlexibleBox, Heading, Loading, Text } from "@/components";
+import { SignInView } from '@/components/partials/auth/sign-in';
 import { usePropertiesContext } from "@/contexts";
-import { Property, PropertyFields, PropertyStates, propertyTypeMap } from "@/types";
+import { env } from "@/env.urls";
 import { selectAuthUser, useTypedSelector } from "@/redux";
-import { SignInView } from "@/app/sign-in/page";
+import { Property, PropertyFields, PropertyStates, propertyTypeMap } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
 import Link from "next/link";
-import { Loading, Block, Text, FlexibleBox, Heading, Field } from "@/components";
-import { env } from "@/env.urls";
 
 const EditProperty: React.FC = () => {
     // Hooks
@@ -111,15 +111,15 @@ const EditProperty: React.FC = () => {
             alert("An error happened, please try again.")
         }
     };
-    
+
     const handleUpdateAvailability = async () => {
         if (!confirm("Are you sure you want to change the avaiability of your listing?") || !renderProperty) return
-        
+
         const property = await updatePropertyAvailability(renderProperty, {
             Property_Available_From: renderProperty.Property_Available_From,
             Property_Is_Active: !renderProperty.Property_Is_Active
         })
-    
+
         if (property) {
             window.location.href = `/edit-listing/${property.Property_ID}`;
         } else {

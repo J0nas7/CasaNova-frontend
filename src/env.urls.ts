@@ -1,7 +1,7 @@
 const prod = {
     url: {
-        APP_URL: "",
-        API_URL: "",
+        APP_URL: "https://casanova.jonas-alexander.dk",
+        API_URL: "https://casanova-laravel-backend.ey.r.appspot.com",
     },
     mobilepay: {
         MP_CLIENT_ID: "",
@@ -16,7 +16,7 @@ const dev = {
     url: {
         APP_URL: "http://localhost:3000",
         API_URL: "http://localhost:8000",
-        // API_URL: "http://192.168.50.86:8000",
+        // API_URL: "http://192.168.0.186:8000",
     },
     mobilepay: {
         MP_CLIENT_ID: "",

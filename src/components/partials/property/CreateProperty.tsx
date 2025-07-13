@@ -1,24 +1,24 @@
 "use client";
 
 // External
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import { faArrowLeft, faArrowRight, faBuilding, faCamera, faFaucetDrip, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import "react-quill/dist/quill.snow.css"; // Import the Quill styles
 
 // Dynamically import ReactQuill with SSR disabled
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import "react-quill/dist/quill.snow.css"; // Import the Quill styles
 
 // Internal
-import { usePropertiesContext } from "@/contexts";
-import { Property, PropertyFields, propertyTypeMap } from "@/types";
+import { SignInView } from '@/components/partials/auth/sign-in';
 import { Block, Text } from "@/components/ui/block-text";
 import { FlexibleBox } from "@/components/ui/flexible-box";
 import { Heading } from "@/components/ui/heading";
 import { Field } from "@/components/ui/input-field";
+import { usePropertiesContext } from "@/contexts";
 import { selectAuthUser, useTypedSelector } from "@/redux";
-import { SignInView } from "@/app/sign-in/page";
+import { Property, PropertyFields, propertyTypeMap } from "@/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const CreateProperty: React.FC = () => {
