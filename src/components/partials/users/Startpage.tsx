@@ -1,16 +1,15 @@
 "use client";
 
 // External
-import React, { use, useEffect, useState } from "react";
-import Link from "next/link";
 import { faHouseChimney } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 
 // Internal
 import { Block, FlexibleBox, Text } from "@/components";
-import { selectAuthUser, useTypedSelector } from "@/redux";
 import { usePropertiesContext } from "@/contexts";
+import { selectAuthUser, useTypedSelector } from "@/redux";
 import { Property, propertyTypeMap } from "@/types";
-import { PropertyImageCard } from "../property/image/PropertyImage";
 import { JumbotronImageRotation } from "../property/PropertyDetails";
 
 export const Startpage = () => {
@@ -161,13 +160,13 @@ export const PopularCities: React.FC<StartpageProps> = ({ properties }) => {
     }
 
     const cityPicture: { [key: string]: string } = {
-        "New York": "https://media.timeout.com/images/105699755/750/422/image.jpg",
-        "Los Angeles": "https://www.thediscoveriesof.com/wp-content/uploads/2023/02/Hollywood-Walk-of-Fame-shutterstock_1054499282.jpg.webp",
-        "Chicago": "https://offloadmedia.feverup.com/secretchicago.com/wp-content/uploads/2021/05/13044548/Riverwalk-1024x608.jpg",
-        "Houston": "https://diamondexchangehouston.com/wp-content/uploads/2022/04/history-of-houston.jpg",
-        "San Francisco": "https://images.fineartamerica.com/images/artworkimages/mediumlarge/3/san-francisco-waterfront-downtown-david-zanzinger.jpg",
-        "Miami": "https://www.chase.com/content/dam/unified-assets/photography/chase/chase-travel/properties/miami/south_beach_ocean_drive_street_16x9.jpg",
-        "Virum": "https://www.landskabsarkitekter.dk/wp-content/uploads/2023/08/U34_Base-Camp-Lyngby_1920-1920x1080.jpg",
+        "New York": "/listings/new-york.jpg",
+        "Los Angeles": "/listings/los-angeles.png",
+        "Chicago": "/listings/chicago.jpg",
+        "Houston": "/listings/houston.webp",
+        "San Francisco": "/listings/san-francisco.jpg",
+        "Miami": "/listings/miami.webp",
+        "Virum": "/listings/virum.jpg"
     }
 
     // Count listings for each city
